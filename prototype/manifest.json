@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Nova Search & Suggest Prototype",
+  "version": "1.0.0",
+  "description": "A Firefox extension",
+  "homepage_url": "https://github.com/octopuxltd/nova-search",
+  "permissions": [],
+  "host_permissions": [],
+  "action": {
+    "default_title": "Nova Search & Suggest Prototype",
+    "default_popup": ""
+  }
+}
+
+
