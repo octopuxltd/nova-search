@@ -91,3 +91,92 @@ html, body {
 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.97705 0.959961C9.40747 0.960192 10.5669 2.12031 10.5669 3.55078V3.76815C10.5669 3.87215 10.6469 3.95862 10.7504 3.96861C11.7999 4.06987 12.4718 4.26647 13.0425 4.83789C13.8608 5.65778 13.9091 6.66217 14.0044 8.66895C14.0168 8.92927 14.0239 9.18142 14.0239 9.41797L14.019 9.78418C14.0157 9.9092 14.0106 10.0379 14.0044 10.168L13.9692 10.875C13.8851 12.4225 13.7586 13.2807 13.0425 13.998C12.224 14.8178 11.198 14.8681 9.14697 14.9688L8.55322 14.9922C8.35776 14.9975 8.16443 15 7.97705 15C7.60244 15 7.20716 14.9883 6.80811 14.9688C4.88477 14.8743 3.86262 14.8241 3.06787 14.1426L2.9126 13.998C2.25256 13.337 2.08765 12.4228 2.02141 11.5171C1.98804 11.0609 2.3593 10.6777 2.81666 10.6777H4.52881C5.22446 10.6774 5.78834 10.1136 5.78857 9.41797C5.78844 8.72221 5.22453 8.15755 4.52881 8.15723H2.81774C2.35997 8.15723 1.99174 7.77321 2.02819 7.3169C2.11267 6.25921 2.27182 5.57182 2.76709 4.99414L2.9126 4.83789C3.4831 4.26676 4.15399 4.06993 5.20274 3.96863C5.30626 3.95863 5.38623 3.87216 5.38623 3.76816V3.55078C5.38623 2.12029 6.54661 0.960159 7.97705 0.959961ZM7.97705 2.29004C7.32467 2.29022 6.78779 2.78644 6.72314 3.42188C6.71884 3.46426 6.71631 3.50727 6.71631 3.55078V4.72732C6.71631 4.99383 6.50702 5.21314 6.2409 5.22763C5.53588 5.26601 5.0532 5.30502 4.66846 5.38477C4.24648 5.47233 4.03925 5.59184 3.85303 5.77832C3.65963 5.97212 3.54247 6.16842 3.45978 6.59968C3.43688 6.71912 3.53108 6.82715 3.6527 6.82715H4.52881C5.95906 6.82747 7.11852 7.98767 7.11865 9.41797C7.11842 10.8482 5.959 12.0075 4.52881 12.0078H3.6526C3.53101 12.0078 3.43683 12.1158 3.45963 12.2352C3.54223 12.6678 3.65924 12.8645 3.85303 13.0586C4.03919 13.2449 4.24667 13.3636 4.66846 13.4512C5.15869 13.5528 5.80795 13.5883 6.87354 13.6406C7.25624 13.6594 7.62904 13.6699 7.97705 13.6699C8.32523 13.6699 8.69864 13.6594 9.08154 13.6406C10.1473 13.5883 10.7964 13.5529 11.2866 13.4512C11.7084 13.3636 11.9159 13.2451 12.1021 13.0586C12.4832 12.6767 12.5727 12.2851 12.6763 10.1045C12.6879 9.86015 12.6938 9.62919 12.6938 9.41797C12.6938 9.20681 12.6879 8.97571 12.6763 8.73145C12.5728 6.55199 12.4828 6.16005 12.1021 5.77832C11.9159 5.59184 11.7083 5.47234 11.2866 5.38477C10.9015 5.30489 10.4184 5.26599 9.71223 5.22761C9.44611 5.21314 9.23682 4.99383 9.23682 4.72731V3.55078C9.23682 3.50729 9.23526 3.46424 9.23096 3.42188C9.20515 3.16773 9.1037 2.9358 8.94971 2.74902C8.87281 2.65572 8.7825 2.57382 8.68213 2.50586C8.481 2.36974 8.23816 2.29013 7.97705 2.29004Z" fill="#7B618F"/>
 </svg>
 </div></div></div></div></div>
+<script>
+(function() {
+  'use strict';
+  
+  // Wait for DOM to be ready
+  function init() {
+    // Find the URL area element
+    const urlArea = document.querySelector('[layer-name="URL"]');
+    if (!urlArea) {
+      return;
+    }
+    
+    // Create overlay element
+    let overlay = document.getElementById('nova-url-overlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'nova-url-overlay';
+      overlay.style.cssText = `
+        position: absolute;
+        background: transparent;
+        z-index: 1000000;
+        display: none;
+        overflow: visible;
+      `;
+      document.body.appendChild(overlay);
+      
+      // Load the overlay HTML content
+      const overlayUrl = chrome.runtime.getURL('search-suggestions-overlay.html');
+      fetch(overlayUrl)
+        .then(response => response.text())
+        .then(html => {
+          // Create a container for the HTML content
+          const container = document.createElement('div');
+          container.innerHTML = html;
+          
+          // Find the main content div and adjust its positioning
+          const mainDiv = container.querySelector('[layer-name="Typing"]');
+          if (mainDiv) {
+            // Remove absolute positioning from the main div and make it relative
+            mainDiv.style.position = 'relative';
+            mainDiv.style.left = '0';
+            mainDiv.style.top = '0';
+            mainDiv.style.width = '100%';
+            mainDiv.style.maxWidth = '1189px';
+          }
+          
+          overlay.appendChild(container);
+        })
+        .catch(error => {
+          console.error('Error loading overlay HTML:', error);
+        });
+    }
+    
+    // Function to show overlay
+    function showOverlay(event) {
+      event.stopPropagation();
+      
+      // Get URL area position relative to viewport
+      const rect = urlArea.getBoundingClientRect();
+      
+      // Position overlay relative to top-left of URL area
+      overlay.style.left = rect.left + 'px';
+      overlay.style.top = (rect.top + rect.height) + 'px';
+      overlay.style.display = 'block';
+    }
+    
+    // Function to hide overlay
+    function hideOverlay(event) {
+      if (overlay && !overlay.contains(event.target) && !urlArea.contains(event.target)) {
+        overlay.style.display = 'none';
+      }
+    }
+    
+    // Add click handler to URL area
+    urlArea.style.cursor = 'pointer';
+    urlArea.addEventListener('click', showOverlay);
+    
+    // Hide overlay when clicking outside
+    document.addEventListener('click', hideOverlay);
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>

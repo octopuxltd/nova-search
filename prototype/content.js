@@ -77,7 +77,7 @@
       pointer-events: auto;
       display: block;
     `;
-    iframe.src = browser.runtime.getURL('figma-design.html');
+    iframe.src = chrome.runtime.getURL('figma-design.html');
     
     // Wait for iframe to load and adjust height
     iframe.onload = function() {

@@ -1,16 +1,14 @@
 // Background script to capture page and detect pixel color
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getPixelColor') {
-    browser.tabs.captureVisibleTab(null, { format: 'png' }).then(dataUrl => {
+    chrome.tabs.captureVisibleTab(null, { format: 'png' }).then(dataUrl => {
       // Create image element
       const img = new Image();
       img.onload = function() {
         try {
-          // Create canvas element
-          const canvas = document.createElement('canvas');
+          // Use OffscreenCanvas for service worker compatibility
+          const canvas = new OffscreenCanvas(img.width, img.height);
           const ctx = canvas.getContext('2d');
-          canvas.width = img.width;
-          canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
           
           // Get the pixel at the top middle position
