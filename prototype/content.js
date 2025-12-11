@@ -17,32 +17,46 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 92px;
       z-index: 999999;
       margin: 0;
       padding: 0;
       pointer-events: none;
-      overflow: hidden;
+      overflow: visible;
     `;
 
+    // Create container for Figma design content
+    const designContainer = document.createElement('div');
+    designContainer.style.cssText = `
+      position: relative;
+      top: 4px;
+      left: 4px;
+      right: 4px;
+      margin: 0 auto;
+      border-radius: 12px;
+      pointer-events: auto;
+      overflow: hidden;
+    `;
+    
     // Create a smooth gradient blur effect using multiple layers
-    // More layers = smoother gradient
+    // The blur will cover the entire header height dynamically
     const numLayers = 10;
     const maxBlur = 20;
     
+    // Create blur layers that cover the full height using percentages
     for (let i = 0; i < numLayers; i++) {
       const layerDiv = document.createElement('div');
       const progress = i / (numLayers - 1); // 0 at top, 1 at bottom
       const blurAmount = maxBlur * (1 - progress); // Full blur at top, no blur at bottom
       const opacity = 1 - progress; // Full opacity at top, transparent at bottom
-      const layerHeight = 92 / numLayers;
+      const topPercent = (i / numLayers) * 100;
+      const heightPercent = 100 / numLayers;
       
       layerDiv.style.cssText = `
         position: absolute;
-        top: ${i * layerHeight}px;
+        top: ${topPercent}%;
         left: 0;
         width: 100%;
-        height: ${layerHeight}px;
+        height: ${heightPercent}%;
         backdrop-filter: blur(${blurAmount}px);
         -webkit-backdrop-filter: blur(${blurAmount}px);
         background-color: rgba(255, 255, 255, ${0.1 * opacity});
@@ -51,33 +65,53 @@
       `;
       header.appendChild(layerDiv);
     }
-
-    // Create the centered rounded rectangle
-    const rectangle = document.createElement('div');
-    rectangle.style.cssText = `
-      position: absolute;
-      top: 4px;
-      left: 4px;
-      right: 4px;
-      height: 88px;
-      background-color: #F4E6EF;
+    
+    // Create an iframe to load the HTML content
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.style.cssText = `
+      width: 100%;
+      border: none;
       border-radius: 12px;
+      overflow: hidden;
       pointer-events: auto;
-      margin: 0 auto;
+      display: block;
     `;
-    header.appendChild(rectangle);
+    iframe.src = browser.runtime.getURL('figma-design.html');
+    
+    // Wait for iframe to load and adjust height
+    iframe.onload = function() {
+      try {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        const iframeBody = iframeDoc.body;
+        const iframeHtml = iframeDoc.documentElement;
+        
+        // Set iframe height to match its content
+        const height = Math.max(
+          iframeBody.scrollHeight,
+          iframeBody.offsetHeight,
+          iframeHtml.clientHeight,
+          iframeHtml.scrollHeight,
+          iframeHtml.offsetHeight
+        );
+        iframe.style.height = height + 'px';
+      } catch (e) {
+        // Cross-origin restrictions - use default height
+        console.warn('Could not access iframe content, using default height');
+      }
+    };
+    
+    designContainer.appendChild(iframe);
+    header.appendChild(designContainer);
 
-    // Insert the header
+    // Insert the header directly into the document body or html
+    // Use document.documentElement to ensure it's at the top level
     if (document.body) {
-      document.body.insertBefore(header, document.body.firstChild);
-      
-      // Add margin to body to prevent content from being hidden behind the header
-      document.body.style.marginTop = '92px';
+      document.documentElement.insertBefore(header, document.documentElement.firstChild);
     } else {
       // If body doesn't exist yet, wait for it
       document.addEventListener('DOMContentLoaded', () => {
-        document.body.insertBefore(header, document.body.firstChild);
-        document.body.style.marginTop = '92px';
+        document.documentElement.insertBefore(header, document.documentElement.firstChild);
       });
     }
   }

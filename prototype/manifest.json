@@ -21,6 +21,12 @@
   "background": {
     "scripts": ["background.js"]
   },
+  "web_accessible_resources": [
+    {
+      "resources": ["figma-design.html", "figma-image.jpg"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "action": {
     "default_title": "Nova Search & Suggest Prototype",
     "default_popup": ""
