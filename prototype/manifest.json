@@ -4,8 +4,23 @@
   "version": "1.0.0",
   "description": "A Firefox extension",
   "homepage_url": "https://github.com/octopuxltd/nova-search",
-  "permissions": [],
-  "host_permissions": [],
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
   "action": {
     "default_title": "Nova Search & Suggest Prototype",
     "default_popup": ""
