@@ -31,7 +31,6 @@ body {
 
 .overlay-shell {
   width: 100%;
-  max-width: 1010px;
   background: var(--bg-surface);
   border-radius: 20px;
   box-shadow: var(--shadow);
@@ -44,7 +43,7 @@ body {
 .bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 8px;
   min-height: 32px;
   border-radius: 40px;
   border: 1px solid var(--border-strong);
@@ -71,6 +70,33 @@ body {
   gap: 6px;
   font-size: 15px;
   color: var(--text-primary);
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.bar-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text-primary);
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+  height: auto;
+}
+
+.bar-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.bar-input::placeholder {
+  color: var(--text-inactive);
 }
 
 .section-title {
@@ -97,8 +123,9 @@ body {
   width: 100%;
 }
 
-.result-row.primary { background: var(--bg-active); }
-.result-row.secondary { background: var(--bg-secondary); }
+.result-row.keyboard-highlight, .card.keyboard-highlight { background: var(--bg-active); }
+.overlay-shell:not(.keyboard-nav) .result-row:hover,
+.overlay-shell:not(.keyboard-nav) .card:hover { background: var(--bg-active); }
 
 .result-icon {
   width: 28px;
@@ -144,7 +171,6 @@ body {
   width: 100%;
 }
 
-.card.filled { background: var(--bg-secondary); }
 
 .card-favicon {
   width: 24px;
@@ -185,7 +211,7 @@ body {
 .layout {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: stretch;
   width: 100%;
 }
 
@@ -196,9 +222,15 @@ body {
   background: var(--bg-secondary);
   border-radius: 18px;
   padding: 16px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 12px;
+}
+
+.layout:has(.card[data-preview="1"]:hover) .right[data-for="1"],
+.layout:has(.card[data-preview="2"]:hover) .right[data-for="2"],
+.layout:has(.card[data-preview="3"]:hover) .right[data-for="3"] {
+  display: flex;
 }
 
 .hero-image {
@@ -212,9 +244,20 @@ body {
 .hero-body { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.3; }
 .hero-link { font-size: 11px; color: var(--text-link); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+.hero-url-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #edeff7;
+  border-radius: 40px;
+  padding: 4px 12px;
+  width: 100%;
+  margin-top: auto;
+}
+
 .badge {
   position: absolute;
-  top: 8px;
+  top: 56px;
   right: 8px;
   width: 32px;
   height: 32px;
@@ -241,8 +284,7 @@ body {
         <span style="font-size:13px;">Google</span>
       </div>
       <div class="bar-text">
-        <span>coffee shop</span>
-        <span style="width:2px;height:17px;background:var(--text-primary);"></span>
+        <input class="bar-input" type="text" placeholder="Search or enter address" autofocus />
       </div>
     </div>
 
@@ -250,7 +292,7 @@ body {
       <div class="left">
         <div class="list">
           <p class="section-title">Google suggestions</p>
-          <div class="result-row primary">
+          <div class="result-row">
             <div class="result-icon" style="background: #fff; border: 1px solid #edeff7;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                 <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
@@ -283,8 +325,9 @@ body {
           <div class="result-row">
             <div class="result-icon" style="width:24px;height:24px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
-</svg>
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
             </div>
             <div class="result-content">
               <p class="result-title" style="font-weight:600;">coffee shop nearby</p>
@@ -294,8 +337,9 @@ body {
           <div class="result-row">
             <div class="result-icon" style="width:24px;height:24px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
-</svg>
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
             </div>
             <div class="result-content">
               <p class="result-title" style="font-weight:600;">coffee shop near me</p>
@@ -305,8 +349,9 @@ body {
           <div class="result-row">
             <div class="result-icon" style="width:24px;height:24px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
-</svg>
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
             </div>
             <div class="result-content">
               <p class="result-title" style="font-weight:600;">coffee shop open now</p>
@@ -329,7 +374,7 @@ body {
         <div class="list">
           <p class="section-title">Bookmarks, history, and tabs</p>
           <div class="cards">
-            <div class="card">
+            <div class="card" data-preview="1">
               <div class="card-favicon">
                 <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Origin Coffee" />
               </div>
@@ -337,7 +382,7 @@ body {
                 <p class="card-title">Origin Coffee: Speciality Coffee Online - Next Day Coff</p>
               </div>
             </div>
-            <div class="card filled">
+            <div class="card" data-preview="2">
               <div class="card-favicon">
                 <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="Food" />
               </div>
@@ -345,7 +390,7 @@ body {
                 <p class="card-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
               </div>
             </div>
-            <div class="card">
+            <div class="card" data-preview="3">
               <div class="card-favicon">
                 <div style="width:23px;height:23px;border-radius:5px; background:#f1f0fb;"></div>
               </div>
@@ -357,21 +402,62 @@ body {
         </div>
       </div>
 
-      <div class="right" aria-label="Preview card">
+      <!-- Preview 1: Origin Coffee -->
+      <div class="right" data-for="1" aria-label="Preview card">
         <div class="badge">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
-</svg>
+          </svg>
+        </div>
+        <img class="hero-image" src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+          <p class="hero-title">Origin Coffee: Speciality Coffee Online</p>
+          <p class="hero-body">Award-winning speciality coffee roasters. Fresh roasted coffee delivered next day. Single origin, blends, and subscriptions available.</p>
+          <div class="hero-url-line">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
+              <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            </div>
+            <p class="hero-link">origincoffee.co.uk</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview 2: Coffee Pros Article -->
+      <div class="right" data-for="2" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
+          </svg>
         </div>
         <img class="hero-image" src="assets/231c6527ed06c080f29c5623b2eb738ccecb9f8b.png" alt="Preview" />
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
           <p class="hero-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
           <p class="hero-body">To make the best coffee at home, start with fresh, quality beans and filter water, grinding beans just before brewing with a consistent size.</p>
-          <div style="display:flex; align-items:center; gap:6px; background:#edeff7; border-radius:40px; padding:4px 12px; width:100%;">
+          <div class="hero-url-line">
             <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
-              <img src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+              <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
             </div>
-            <p class="hero-link">domain.com/home/kitchen-and-household/i-asked-10-coffee...</p>
+            <p class="hero-link">foodandwine.com/kitchen/i-asked-10-coffee-pros...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview 3: RAVE Coffee -->
+      <div class="right" data-for="3" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
+          </svg>
+        </div>
+        <img class="hero-image" src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+          <p class="hero-title">RAVE Coffee: Speciality Coffee Roasters</p>
+          <p class="hero-body">Independent UK coffee roasters since 2014. Freshly roasted speciality coffee beans, equipment, and brewing guides. Free delivery on orders over £25.</p>
+          <div class="hero-url-line">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden; background:#1a1a2e; display:grid; place-items:center;">
+              <span style="color:white; font-size:10px; font-weight:bold;">R</span>
+            </div>
+            <p class="hero-link">ravecoffee.co.uk</p>
           </div>
         </div>
       </div>

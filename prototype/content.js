@@ -136,8 +136,6 @@
           position: fixed;
           z-index: 1000002;
           display: none;
-          max-width: 1010px;
-          width: calc(100% - 24px);
           pointer-events: auto;
         `;
         document.body.appendChild(overlay);
@@ -165,11 +163,178 @@
     }
 
     function positionOverlay(overlay, urlAreaRect, iframeRect) {
-      const left = iframeRect.left + urlAreaRect.left;
-      const top = iframeRect.top + urlAreaRect.bottom + 11; // move down by 11px
+      const left = iframeRect.left + urlAreaRect.left - 8; // 8px to the left
+      const top = iframeRect.top + urlAreaRect.bottom + 11 - 52; // moved up by 52px
       overlay.style.left = `${left}px`;
       overlay.style.top = `${top}px`;
       overlay.style.width = `${urlAreaRect.width}px`; // match URL bar width
+    }
+
+    function navigateTo(value) {
+      const trimmed = (value || '').replace(/\s+/g, ' ').trim();
+      if (!trimmed) return;
+      
+      const overlay = document.getElementById('nova-suggestions-overlay');
+      if (overlay) overlay.style.display = 'none';
+      
+      // Check if it has a scheme
+      const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(trimmed);
+      if (hasScheme) {
+        console.log('[Nova Content] Navigating to', trimmed);
+        window.location.href = trimmed;
+        return;
+      }
+      
+      // Check if it looks like a URL (domain.tld pattern, no spaces)
+      const looksLikeUrl = /^[^\s]+\.[a-z]{2,}(\/.*)?$/i.test(trimmed) && !trimmed.includes(' ');
+      if (looksLikeUrl) {
+        const target = `https://${trimmed}`;
+        console.log('[Nova Content] Navigating to', target);
+        window.location.href = target;
+        return;
+      }
+      
+      // Otherwise, Google search
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
+      console.log('[Nova Content] Searching Google for', trimmed);
+      window.location.href = searchUrl;
+    }
+
+    function wireOverlayInput(overlay) {
+      const input = overlay.querySelector('.bar-input');
+      if (!input) return;
+      
+      // Pre-fill with current URL
+      if (!input.dataset.wired) {
+        input.value = window.location.href;
+        input.dataset.wired = 'true';
+        
+        let highlightIndex = -1; // -1 means input is focused
+        
+        function getSelectableItems() {
+          return Array.from(overlay.querySelectorAll('.result-row, .card'));
+        }
+        
+        const overlayShell = overlay.querySelector('.overlay-shell');
+        
+        function updateHighlight(newIndex, isKeyboardNav = true) {
+          const items = getSelectableItems();
+          // Remove existing keyboard highlight
+          items.forEach(item => item.classList.remove('keyboard-highlight'));
+          
+          highlightIndex = newIndex;
+          
+          // Toggle keyboard-nav class to suppress hover styles
+          if (overlayShell) {
+            if (isKeyboardNav) {
+              overlayShell.classList.add('keyboard-nav');
+            } else {
+              overlayShell.classList.remove('keyboard-nav');
+            }
+          }
+          
+          if (isKeyboardNav && highlightIndex >= 0 && highlightIndex < items.length) {
+            items[highlightIndex].classList.add('keyboard-highlight');
+            items[highlightIndex].scrollIntoView({ block: 'nearest' });
+          }
+        }
+        
+        // Add mouse listeners to sync highlight index with hover
+        function wireMouseListeners() {
+          const items = getSelectableItems();
+          items.forEach((item, index) => {
+            item.addEventListener('mouseenter', () => {
+              // Clear keyboard highlight and update index to match hovered item
+              updateHighlight(index, false);
+            });
+          });
+        }
+        wireMouseListeners();
+        
+        // Reset highlight when user types (not arrow keys)
+        input.addEventListener('input', () => {
+          highlightIndex = -1;
+          const items = getSelectableItems();
+          items.forEach(item => item.classList.remove('keyboard-highlight'));
+          if (overlayShell) overlayShell.classList.remove('keyboard-nav');
+        });
+        
+        // Handle keyboard navigation
+        input.addEventListener('keydown', (e) => {
+          const items = getSelectableItems();
+          
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (highlightIndex < items.length - 1) {
+              updateHighlight(highlightIndex + 1);
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (highlightIndex > -1) {
+              updateHighlight(highlightIndex - 1);
+            }
+            if (highlightIndex === -1) {
+              input.focus();
+            }
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (highlightIndex >= 0 && highlightIndex < items.length) {
+              // Trigger click on highlighted item
+              items[highlightIndex].click();
+            } else {
+              navigateTo(input.value);
+            }
+          } else if (e.key === 'Escape') {
+            overlay.style.display = 'none';
+            highlightIndex = -1;
+            updateHighlight(-1);
+          }
+        });
+        
+        // Also listen on overlay for arrow keys when items are highlighted
+        overlay.addEventListener('keydown', (e) => {
+          if (e.target === input) return; // Already handled above
+          
+          const items = getSelectableItems();
+          
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (highlightIndex < items.length - 1) {
+              updateHighlight(highlightIndex + 1);
+            }
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (highlightIndex > -1) {
+              updateHighlight(highlightIndex - 1);
+            }
+            if (highlightIndex === -1) {
+              input.focus();
+            }
+          } else if (e.key === 'Enter' && highlightIndex >= 0) {
+            e.preventDefault();
+            items[highlightIndex].click();
+          } else if (e.key === 'Escape') {
+            overlay.style.display = 'none';
+            highlightIndex = -1;
+            updateHighlight(-1);
+          }
+        });
+        
+        // Reset highlight when overlay is hidden
+        const observer = new MutationObserver(() => {
+          if (overlay.style.display === 'none') {
+            highlightIndex = -1;
+            updateHighlight(-1);
+          }
+        });
+        observer.observe(overlay, { attributes: true, attributeFilter: ['style'] });
+      }
+      
+      // Focus and select all text
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 0);
     }
 
     // Show/hide overlay driven by messages from iframe
@@ -186,17 +351,9 @@
           if (data.rect) {
             positionOverlay(overlay, data.rect, iframeRect);
             overlay.style.display = 'block';
+            // Wire up and focus the overlay input
+            wireOverlayInput(overlay);
           }
-        }
-        if (data.type === 'nova:navigate') {
-          const value = (data.value || '').replace(/\s+/g, ' ').trim();
-          if (!value) return;
-          const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value);
-          const target = hasScheme ? value : `https://${value}`;
-          const overlay = document.getElementById('nova-suggestions-overlay');
-          if (overlay) overlay.style.display = 'none';
-          console.log('[Nova Content] Navigating to', target);
-          window.location.href = target;
         }
       };
       window.addEventListener('message', handleMessage);
@@ -215,6 +372,73 @@
       document.addEventListener('click', hideOverlay);
     }
 
+    // Function to get current favicon
+    function getFavicon() {
+      try {
+        const links = Array.from(
+          document.querySelectorAll(
+            'link[rel~="icon"], link[rel="icon"], link[rel="shortcut icon"], link[rel="mask-icon"]'
+          )
+        );
+        if (links.length) {
+          const href = links[0].getAttribute('href');
+          if (href) return new URL(href, document.baseURI).href;
+        }
+      } catch (_) {}
+      try {
+        return new URL('/favicon.ico', window.location.origin).href;
+      } catch (_) {
+        return '';
+      }
+    }
+    
+    // Function to send current URL/title to iframe
+    function sendUrlToIframe() {
+      try {
+        iframe.contentWindow.postMessage(
+          { type: 'nova:url-current', href: window.location.href, title: document.title, favicon: getFavicon() },
+          '*'
+        );
+      } catch (err) {
+        console.warn('[Nova Content] Failed to post current URL to iframe', err);
+      }
+    }
+    
+    // Listen for SPA navigation (History API)
+    function setupSpaListeners() {
+      // Listen for back/forward navigation
+      window.addEventListener('popstate', () => {
+        console.log('[Nova Content] popstate detected');
+        sendUrlToIframe();
+      });
+      
+      // Override pushState and replaceState to detect SPA navigation
+      const originalPushState = history.pushState;
+      const originalReplaceState = history.replaceState;
+      
+      history.pushState = function(...args) {
+        originalPushState.apply(this, args);
+        console.log('[Nova Content] pushState detected');
+        setTimeout(sendUrlToIframe, 0);
+      };
+      
+      history.replaceState = function(...args) {
+        originalReplaceState.apply(this, args);
+        console.log('[Nova Content] replaceState detected');
+        setTimeout(sendUrlToIframe, 0);
+      };
+      
+      // Watch for title changes
+      const titleEl = document.querySelector('title');
+      if (titleEl) {
+        const titleObserver = new MutationObserver(() => {
+          console.log('[Nova Content] Title changed');
+          sendUrlToIframe();
+        });
+        titleObserver.observe(titleEl, { childList: true, characterData: true, subtree: true });
+      }
+    }
+
     // Wait for iframe to load and adjust height + overlay wiring
     iframe.onload = function() {
       console.log('[Nova Content] Iframe loaded');
@@ -227,33 +451,10 @@
         setupMessageBridge(iframe);
 
         // Send current page URL to iframe for display
-        try {
-          const favicon = (() => {
-            try {
-              const links = Array.from(
-                document.querySelectorAll(
-                  'link[rel~="icon"], link[rel="icon"], link[rel="shortcut icon"], link[rel="mask-icon"]'
-                )
-              );
-              if (links.length) {
-                const href = links[0].getAttribute('href');
-                if (href) return new URL(href, document.baseURI).href;
-              }
-            } catch (_) {}
-            try {
-              return new URL('/favicon.ico', window.location.origin).href;
-            } catch (_) {
-              return '';
-            }
-          })();
-
-          iframe.contentWindow.postMessage(
-            { type: 'nova:url-current', href: window.location.href, title: document.title, favicon },
-            '*'
-          );
-        } catch (err) {
-          console.warn('[Nova Content] Failed to post current URL to iframe', err);
-        }
+        sendUrlToIframe();
+        
+        // Setup listeners for SPA navigation
+        setupSpaListeners();
       } catch (e) {
         console.warn('[Nova Content] Could not access iframe content, using default height', e);
         setTimeout(updateBodyPadding, 0);

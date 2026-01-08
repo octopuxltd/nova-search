@@ -235,6 +235,8 @@ body {
 .url-ghost {
   position: absolute;
   left: 0;
+  display: flex;
+  align-items: center;
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
@@ -249,8 +251,21 @@ body {
   color: var(--text-primary);
 }
 
+.url-title {
+  color: var(--text-tertiary);
+}
+
 .url-rest {
   color: var(--text-tertiary);
+  display: none;
+}
+
+.url-text:hover .url-title {
+  display: none;
+}
+
+.url-text:hover .url-rest {
+  display: inline;
 }
 
 .search-menu {
@@ -418,7 +433,7 @@ img.favicon {
 </svg>
         </div>
         <div class="url-text">
-          <div class="url-ghost"><span class="url-domain"></span><span class="url-rest"></span></div>
+          <div class="url-ghost"><span class="url-domain"></span><span class="url-title"></span><span class="url-rest"></span></div>
           <input class="url-field" type="text" placeholder="Search or start browsing" />
         </div>
       </div>
