@@ -152,7 +152,11 @@
       try {
         const res = await fetch(overlayUrl);
         if (!res.ok) throw new Error(`Overlay fetch failed: ${res.status}`);
-        overlay.innerHTML = await res.text();
+        let html = await res.text();
+        // Rewrite relative asset paths to extension URLs
+        const assetsBase = chrome.runtime.getURL('assets/');
+        html = html.replace(/src="assets\//g, `src="${assetsBase}`);
+        overlay.innerHTML = html;
         overlay.dataset.loaded = 'true';
       } catch (err) {
         console.error('[Nova Content] Failed to load overlay HTML', err);
