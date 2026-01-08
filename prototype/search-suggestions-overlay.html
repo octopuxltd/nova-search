@@ -1,68 +1,381 @@
-<style>:root{--Background-Surface-Primary:#FFF;--Background-Surface-Secondary:#E1E3F2;--Text-Primary:#25052C;--Typography-Fonts-Sans:\"Segoe UI\";--Typography-Sizes-Default:15px;--Background-Surface-Active:#E6D7F5;--Text-Tertiary:#5E606D;--Typography-Sizes-S:13px;--Text-Inactive:#8A8C9A;--Background-Address-Bar-Primary:#FFF;--Background-Inverse:#DCFAF8;--space-xsmall:4px;--Typography-Sizes-XS:11px;--button-size-icon:32px;--Icon-Primary:#271732;--Text-Link:#7338E2;--Background-Address-Bar-Tab-bar:#F1F0FB;--Icon-Primary-soft:#7B618F;--Typography-Sizes-M:16px;--Text-Secondary:#393443;}</style><!-- Figma selected node: Typing -->
-<div layer-name="Typing" style="display:flex;width:1189px;flex-direction:column;align-items:flex-start;gap:12px;border-radius:20px;box-shadow:0 4px 12px 2px rgba(58, 15, 110, 0.24);position:absolute;left:155px;top:48px;height:633px"><div layer-name="Bar" style="display:flex;height:32px;justify-content:space-between;align-items:center;align-self:stretch;border-radius:40px;border:1px solid #945AF2;box-shadow:0 0 2px 0 rgba(0, 0, 0, 0.10) inset;position:relative"><div style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="search menu" data-component-name="search menu" style="display:flex;padding:4px 4px 4px 6px;align-items:center;gap:2px;border-radius:80px;background:#E1E3F2;position:relative"><div layer-name="Favicons" data-component-name="Favicons" data-variant-name="Domain=Google" props='{Domain:Google}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;position:relative"><div layer-name="16 / Google" data-component-name="16 / Google" style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;flex-shrink:0;position:absolute;left:0px;top:0px"><div layer-name="16 / Google" data-component-name="16 / Google" style="width:16px;height:16px;flex-shrink:0;background:url(<path-to-image>) lightgray 50% / cover no-repeat;position:absolute;left:0px;top:0px"></div></div></div><svg id="I2589:8580;626:7431" layer-name="chevron-down-small" data-component-name="chevron-down-small" style="width:16px;height:16px;position:relative" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.8619 5.92573C11.1223 5.66538 11.5443 5.66538 11.8046 5.92573C12.065 6.18608 12.065 6.60809 11.8046 6.86844L8.94266 9.73042C8.84492 9.82816 8.72534 9.94997 8.60867 10.039C8.47656 10.1398 8.27336 10.2591 7.99995 10.2591C7.72654 10.2591 7.52334 10.1398 7.39123 10.039C7.27455 9.94997 7.15498 9.82816 7.05724 9.73042L4.19526 6.86844C3.93491 6.60809 3.93491 6.18608 4.19526 5.92573C4.45561 5.66538 4.87762 5.66538 5.13797 5.92573L7.52854 8.31631C7.75077 8.53853 7.86188 8.64964 7.99995 8.64964C8.13802 8.64964 8.24913 8.53853 8.47135 8.31631L10.8619 5.92573Z" fill="#7B618F"/>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --bg-surface: #ffffff;
+  --bg-secondary: #f1f0fb;
+  --bg-active: #e6d7f5;
+  --bg-chip: rgba(255, 255, 255, 0.5);
+  --text-primary: #25052c;
+  --text-secondary: #393443;
+  --text-tertiary: #5e606d;
+  --text-inactive: #8a8c9a;
+  --text-link: #7338e2;
+  --border-strong: #945af2;
+  --shadow: 0 4px 12px 2px rgba(58, 15, 110, 0.24);
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.overlay-shell {
+  width: 100%;
+  max-width: 1010px;
+  background: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+  border-radius: 40px;
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 2px 0 inset rgba(0,0,0,0.1);
+  padding: 2px 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px 4px 6px;
+  background: #e1e3f2;
+  border-radius: 80px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.chip svg { width: 16px; height: 16px; }
+
+.bar-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-radius: 24px;
+  min-height: 36px;
+  width: 100%;
+}
+
+.result-row.primary { background: var(--bg-active); }
+.result-row.secondary { background: var(--bg-secondary); }
+
+.result-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-chip);
+  overflow: hidden;
+}
+
+.result-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+.result-content {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.result-meta { color: var(--text-tertiary); font-size: 13px; margin: 0; white-space: nowrap; }
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  width: 100%;
+}
+
+.card.filled { background: var(--bg-secondary); }
+
+.card-favicon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 2px solid var(--bg-secondary);
+}
+
+.card-favicon img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.left { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.right {
+  width: 252px;
+  flex: 0 0 auto;
+  background: var(--bg-secondary);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-image {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.hero-title { font-size: 16px; color: var(--text-primary); margin: 0; }
+.hero-body { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.3; }
+.hero-link { font-size: 11px; color: var(--text-link); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px 0 0 10px;
+  background: var(--bg-secondary);
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  .right { width: 100%; }
+}
+</style>
+</head>
+<body>
+  <div class="overlay-shell">
+    <div class="bar">
+      <div class="chip">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="8" fill="#4285F4" opacity="0.12"/>
+          <path d="M7.6 8.4H11c-.2.9-.6 1.6-1.2 2.1-.5.4-1.2.7-2 .7-1 0-1.9-.3-2.6-1-.7-.7-1.1-1.6-1.1-2.6 0-1 .4-1.9 1.1-2.6C5.9 3.3 6.8 3 7.9 3c.8 0 1.5.2 2 .6.5.4.9.9 1.1 1.6H7.9v1.2Z" fill="#4285F4"/>
 </svg>
-</div><div style="display:flex;align-items:center;position:relative"><div layer-name="weather this we" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather this we</span></div><div layer-name="blinking cursor" data-component-name="blinking cursor" data-variant-name="Property 1=Default" props='{Property 1:Default}' style="width:1px;height:17px;position:relative"><div style="width:2px;height:17px;position:absolute;left:0px;top:0px"></div></div></div></div></div><div layer-name="Results" style="display:flex;height:32px;max-width:1182px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Icon" data-component-name="Icon" props='{Icon:2589:5840}' style="display:flex;padding:4px;justify-content:center;align-items:center;gap:4px;border-radius:99px;background:rgba(255, 255, 255, 0.50);position:relative"><svg id="I2589:8586;775:5040" layer-name="Icon" data-component-name=" search" style="width:16px;height:16px;position:relative" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M7.11816 1C10.4972 1 13.2371 3.74013 13.2373 7.11914L13.2295 7.43457C13.1653 8.69826 12.7162 9.85966 11.999 10.8069C11.9374 10.8882 11.9433 11.0029 12.0153 11.0751L14.8011 13.8654C15.0608 14.1251 15.0608 14.5462 14.8011 14.8059C14.5414 15.0653 14.1203 15.0655 13.8607 14.8059L11.0741 12.0166C11.0019 11.9444 10.8872 11.9384 10.8057 12C9.78013 12.7762 8.50337 13.2383 7.11816 13.2383L6.80371 13.2305C3.57099 13.0666 1.00026 10.3925 1 7.11914C1.00023 3.74027 3.7393 1.00023 7.11816 1ZM7.11816 2.33105C4.47384 2.33129 2.33031 4.47481 2.33008 7.11914C2.33034 9.76344 4.47386 11.908 7.11816 11.9082C9.76267 11.9082 11.907 9.76358 11.9072 7.11914C11.907 4.47467 9.76269 2.33105 7.11816 2.33105Z" fill="#7B618F"/>
+        <span style="font-size:13px;">Google</span>
+      </div>
+      <div class="bar-text">
+        <span>coffee shop</span>
+        <span style="width:2px;height:17px;background:var(--text-primary);"></span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="left">
+        <div class="list">
+          <p class="section-title">Google suggestions</p>
+          <div class="result-row primary">
+            <div class="result-icon" style="background: #fff; border: 1px solid #edeff7;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
 </svg>
-</div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather this we</span></div></div><div layer-name="Search" style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="Divider" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">•</span></div><div layer-name="Search with" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Search with Google</span></div></div></div></div><div layer-name="Search results" style="display:flex;align-items:flex-start;gap:24px;align-self:stretch;position:relative"><div layer-name="List" style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;flex:1 0 0;position:relative"><div style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;align-self:stretch;position:relative"><div style="display:flex;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="London, UK" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:13px;color:rgba(94,96,109,1)">London, UK</span></div><div layer-name="Divider" style="color:#8A8C9A;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(138,140,154,1)">•</span></div><div layer-name="AccuWeather" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">AccuWeather</span></div><div layer-name="Divider" style="color:#8A8C9A;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(138,140,154,1)">•</span></div><div layer-name="Sponsored" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Sponsored</span></div></div><div style="display:flex;justify-content:space-between;align-items:center;align-self:stretch;position:relative"><div style="display:flex;align-items:center;gap:16px;position:relative"><div layer-name="Carrot Enabled" style="display:flex;width:220px;align-items:center;gap:12px;border-radius:12px;position:relative"><div style="display:flex;width:60px;height:60px;justify-content:center;align-items:center;flex-shrink:0;border-radius:10px;position:relative"><svg id="2589:8610" style="width:32px;height:32px;flex-shrink:0;position:relative" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M23.9522 15.9913C23.9432 13.7133 22.0897 11.8738 19.8119 11.8826C17.5339 11.8917 15.6942 13.746 15.7033 16.024C15.7125 18.3018 17.5667 20.1406 19.8446 20.1316L19.8499 21.4617L19.5686 21.456C16.779 21.3255 14.5335 19.098 14.3812 16.3095L14.3732 16.0293C14.3613 13.0167 16.794 10.5645 19.8066 10.5526L20.0869 10.5583C22.9696 10.6929 25.2707 13.0675 25.2823 15.986L25.2766 16.2663C25.142 19.1489 22.7682 21.4499 19.8499 21.4617L19.8446 20.1316C22.1224 20.1224 23.9611 18.269 23.9522 15.9913Z" fill="#007FA8"/>
-<path d="M19.0949 8.26853L19.0847 5.68066C19.0832 5.31339 19.3798 5.01444 19.7471 5.01299C20.1143 5.01153 20.4133 5.30812 20.4147 5.67538L20.425 8.26325C20.4265 8.63052 20.1299 8.92947 19.7626 8.93092C19.3953 8.93238 19.0964 8.6358 19.0949 8.26853Z" fill="#007FA8"/>
-<path d="M27.3408 15.1965L29.9287 15.1862C30.296 15.1848 30.5949 15.4814 30.5964 15.8486C30.5978 16.2159 30.3013 16.5148 29.934 16.5163L27.3461 16.5266C26.9789 16.528 26.6799 16.2314 26.6785 15.8642C26.677 15.4969 26.9736 15.198 27.3408 15.1965Z" fill="#007FA8"/>
-<path d="M12.1339 22.6824L13.9565 20.8452L14.9008 21.782L13.0781 23.6191L12.1339 22.6824Z" fill="#007FA8"/>
-<path d="M25.6946 20.8144L27.5318 22.6371C27.7925 22.8958 27.7942 23.3169 27.5355 23.5776C27.2769 23.8383 26.8557 23.84 26.595 23.5813L24.7579 21.7587C24.4971 21.5 24.4955 21.0789 24.7541 20.8182C25.0128 20.5574 25.4339 20.5558 25.6946 20.8144Z" fill="#007FA8"/>
-<path d="M20.4824 23.5357L20.4927 26.1236L19.1626 26.1289L19.1523 23.541L20.4824 23.5357Z" fill="#007FA8"/>
-<path d="M12.1576 16.5859L9.56975 16.5962L9.56447 15.2661L12.1523 15.2559L12.1576 16.5859Z" fill="#007FA8"/>
-<path d="M27.4785 9.10088L25.6559 10.938C25.3972 11.1988 24.9761 11.2004 24.7154 10.9418C24.4547 10.6831 24.453 10.262 24.7117 10.0013L26.5343 8.16411C26.793 7.90339 27.2141 7.90171 27.4748 8.16038C27.7355 8.41905 27.7372 8.84015 27.4785 9.10088Z" fill="#007FA8"/>
-<path d="M13.0149 8.23632L14.8521 10.059C15.1128 10.3176 15.1145 10.7387 14.8558 10.9995C14.5972 11.2602 14.1761 11.2619 13.9153 11.0032L12.0782 9.18055C11.8174 8.92188 11.8158 8.50078 12.0744 8.24005C12.3331 7.97932 12.7542 7.97765 13.0149 8.23632Z" fill="#007FA8"/>
-<path d="M11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621Z" fill="#DCFAF8"/>
-<path d="M1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123ZM2.43555 22.123C2.43555 24.2879 4.14619 26.0534 6.28906 26.1416C6.30381 26.1422 6.31839 26.1444 6.33301 26.1455H19.2422C21.1332 26.1418 22.6759 24.6565 22.7705 22.7881L22.7754 22.6064C22.7754 20.7123 21.2878 19.166 19.417 19.0713L19.2354 19.0664C19.0018 19.0664 18.7749 19.0886 18.5566 19.1309C18.1881 19.2022 17.8062 19.1147 17.5059 18.8896C17.2056 18.6646 17.0145 18.3229 16.9795 17.9492C16.7271 15.2554 14.5225 13.1284 11.7949 12.998L11.5293 12.9922C8.9101 12.9922 6.71764 14.8319 6.17969 17.291C6.07717 17.7596 5.73086 18.1371 5.27246 18.2783C3.62841 18.7846 2.43574 20.3161 2.43555 22.123Z" fill="#007FA8"/>
+            </div>
+            <div class="result-content">
+              <p class="result-title">coffee shop</p>
+              <p class="result-meta">• Search with Google</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <div class="result-row" style="padding: 0; align-items: stretch;">
+            <div style="display:flex; gap:12px; padding:4px 12px; align-items:center; width:100%;">
+              <div style="width:60px;height:60px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#ebe7ff;display:grid;place-items:center;">
+                <img src="assets/d39cb9ac9cda75209c68c64ce2055705731df45d.png" alt="Arabica" style="width:100%;height:100%;object-fit:cover;" />
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                <p class="result-title" style="font-weight:600;">Arabica % Broadway Market</p>
+                <p class="result-meta" style="font-size:11px; letter-spacing:0.22px;">33 Broadway Market, London E8 4PH • $ • <span style="color:#186d00;font-weight:600;">Open</span> until 5pm today • 4.3 (1.1k)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <p class="section-title">Google suggestions</p>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
 </svg>
-</div><div layer-name="Label" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;position:relative"><div layer-name="Label" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:15px;color:rgba(37,5,44,1)">2°C</span></div><div layer-name="Divider" style="color:#8A8C9A;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(138,140,154,1)">•</span></div><div layer-name="✎ Label" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Partly cloudy</span></div></div><div layer-name="Description" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Description" style="color:#5E606D;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:400;line-height:normal;letter-spacing:0.22px;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:11px;color:rgba(94,96,109,1)">Today, Dec 1</span></div></div></div></div><div layer-name="Carrot Enabled" style="display:flex;width:220px;align-items:center;gap:12px;border-radius:12px;position:relative"><div style="display:flex;width:60px;height:60px;justify-content:center;align-items:center;flex-shrink:0;border-radius:10px;position:relative"><svg id="2589:8631" style="width:32px;height:32px;flex-shrink:0;position:relative" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M23.9522 15.9913C23.9432 13.7133 22.0897 11.8738 19.8119 11.8826C17.5339 11.8917 15.6942 13.746 15.7033 16.024C15.7125 18.3018 17.5667 20.1406 19.8446 20.1316L19.8499 21.4617L19.5686 21.456C16.779 21.3255 14.5335 19.098 14.3812 16.3095L14.3732 16.0293C14.3613 13.0167 16.794 10.5645 19.8066 10.5526L20.0869 10.5583C22.9696 10.6929 25.2707 13.0675 25.2823 15.986L25.2766 16.2663C25.142 19.1489 22.7682 21.4499 19.8499 21.4617L19.8446 20.1316C22.1224 20.1224 23.9611 18.269 23.9522 15.9913Z" fill="#007FA8"/>
-<path d="M19.0949 8.26853L19.0847 5.68066C19.0832 5.31339 19.3798 5.01444 19.7471 5.01299C20.1143 5.01153 20.4133 5.30812 20.4147 5.67538L20.425 8.26325C20.4265 8.63052 20.1299 8.92947 19.7626 8.93092C19.3953 8.93238 19.0964 8.6358 19.0949 8.26853Z" fill="#007FA8"/>
-<path d="M27.3408 15.1965L29.9287 15.1862C30.296 15.1848 30.5949 15.4814 30.5964 15.8486C30.5978 16.2159 30.3013 16.5148 29.934 16.5163L27.3461 16.5266C26.9789 16.528 26.6799 16.2314 26.6785 15.8642C26.677 15.4969 26.9736 15.198 27.3408 15.1965Z" fill="#007FA8"/>
-<path d="M12.1339 22.6824L13.9565 20.8452L14.9008 21.782L13.0781 23.6191L12.1339 22.6824Z" fill="#007FA8"/>
-<path d="M25.6946 20.8144L27.5318 22.6371C27.7925 22.8958 27.7942 23.3169 27.5355 23.5776C27.2769 23.8383 26.8557 23.84 26.595 23.5813L24.7579 21.7587C24.4971 21.5 24.4955 21.0789 24.7541 20.8182C25.0128 20.5574 25.4339 20.5558 25.6946 20.8144Z" fill="#007FA8"/>
-<path d="M20.4824 23.5357L20.4927 26.1236L19.1626 26.1289L19.1523 23.541L20.4824 23.5357Z" fill="#007FA8"/>
-<path d="M12.1576 16.5859L9.56975 16.5962L9.56447 15.2661L12.1523 15.2559L12.1576 16.5859Z" fill="#007FA8"/>
-<path d="M27.4785 9.10088L25.6559 10.938C25.3972 11.1988 24.9761 11.2004 24.7154 10.9418C24.4547 10.6831 24.453 10.262 24.7117 10.0013L26.5343 8.16411C26.793 7.90339 27.2141 7.90171 27.4748 8.16038C27.7355 8.41905 27.7372 8.84015 27.4785 9.10088Z" fill="#007FA8"/>
-<path d="M13.0149 8.23632L14.8521 10.059C15.1128 10.3176 15.1145 10.7387 14.8558 10.9995C14.5972 11.2602 14.1761 11.2619 13.9153 11.0032L12.0782 9.18055C11.8174 8.92188 11.8158 8.50078 12.0744 8.24005C12.3331 7.97932 12.7542 7.97765 13.0149 8.23632Z" fill="#007FA8"/>
-<path d="M11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621Z" fill="#DCFAF8"/>
-<path d="M1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123ZM2.43555 22.123C2.43555 24.2879 4.14619 26.0534 6.28906 26.1416C6.30381 26.1422 6.31839 26.1444 6.33301 26.1455H19.2422C21.1332 26.1418 22.6759 24.6565 22.7705 22.7881L22.7754 22.6064C22.7754 20.7123 21.2878 19.166 19.417 19.0713L19.2354 19.0664C19.0018 19.0664 18.7749 19.0886 18.5566 19.1309C18.1881 19.2022 17.8062 19.1147 17.5059 18.8896C17.2056 18.6646 17.0145 18.3229 16.9795 17.9492C16.7271 15.2554 14.5225 13.1284 11.7949 12.998L11.5293 12.9922C8.9101 12.9922 6.71764 14.8319 6.17969 17.291C6.07717 17.7596 5.73086 18.1371 5.27246 18.2783C3.62841 18.7846 2.43574 20.3161 2.43555 22.123Z" fill="#007FA8"/>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop nearby</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
 </svg>
-</div><div layer-name="Label" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;position:relative"><div layer-name="Label" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:15px;color:rgba(37,5,44,1)">-4°C</span></div><div layer-name="Divider" style="color:#8A8C9A;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(138,140,154,1)">•</span></div><div layer-name="✎ Label" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Partly cloudy</span></div></div><div layer-name="Description" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Description" style="color:#5E606D;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:400;line-height:normal;letter-spacing:0.22px;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:11px;color:rgba(94,96,109,1)">Tomorrow, Dec 2</span></div></div></div></div><div layer-name="Carrot Enabled" style="display:flex;width:220px;align-items:center;gap:12px;border-radius:12px;position:relative"><div style="display:flex;width:60px;height:60px;justify-content:center;align-items:center;flex-shrink:0;border-radius:10px;position:relative"><svg id="2589:8652" style="width:32px;height:32px;flex-shrink:0;position:relative" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M23.9522 15.9913C23.9432 13.7133 22.0897 11.8738 19.8119 11.8826C17.5339 11.8917 15.6942 13.746 15.7033 16.024C15.7125 18.3018 17.5667 20.1406 19.8446 20.1316L19.8499 21.4617L19.5686 21.456C16.779 21.3255 14.5335 19.098 14.3812 16.3095L14.3732 16.0293C14.3613 13.0167 16.794 10.5645 19.8066 10.5526L20.0869 10.5583C22.9696 10.6929 25.2707 13.0675 25.2823 15.986L25.2766 16.2663C25.142 19.1489 22.7682 21.4499 19.8499 21.4617L19.8446 20.1316C22.1224 20.1224 23.9611 18.269 23.9522 15.9913Z" fill="#007FA8"/>
-<path d="M19.0949 8.26853L19.0847 5.68066C19.0832 5.31339 19.3798 5.01444 19.7471 5.01299C20.1143 5.01153 20.4133 5.30812 20.4147 5.67538L20.425 8.26325C20.4265 8.63052 20.1299 8.92947 19.7626 8.93092C19.3953 8.93238 19.0964 8.6358 19.0949 8.26853Z" fill="#007FA8"/>
-<path d="M27.3408 15.1965L29.9287 15.1862C30.296 15.1848 30.5949 15.4814 30.5964 15.8486C30.5978 16.2159 30.3013 16.5148 29.934 16.5163L27.3461 16.5266C26.9789 16.528 26.6799 16.2314 26.6785 15.8642C26.677 15.4969 26.9736 15.198 27.3408 15.1965Z" fill="#007FA8"/>
-<path d="M12.1339 22.6824L13.9565 20.8452L14.9008 21.782L13.0781 23.6191L12.1339 22.6824Z" fill="#007FA8"/>
-<path d="M25.6946 20.8144L27.5318 22.6371C27.7925 22.8958 27.7942 23.3169 27.5355 23.5776C27.2769 23.8383 26.8557 23.84 26.595 23.5813L24.7579 21.7587C24.4971 21.5 24.4955 21.0789 24.7541 20.8182C25.0128 20.5574 25.4339 20.5558 25.6946 20.8144Z" fill="#007FA8"/>
-<path d="M20.4824 23.5357L20.4927 26.1236L19.1626 26.1289L19.1523 23.541L20.4824 23.5357Z" fill="#007FA8"/>
-<path d="M12.1576 16.5859L9.56975 16.5962L9.56447 15.2661L12.1523 15.2559L12.1576 16.5859Z" fill="#007FA8"/>
-<path d="M27.4785 9.10088L25.6559 10.938C25.3972 11.1988 24.9761 11.2004 24.7154 10.9418C24.4547 10.6831 24.453 10.262 24.7117 10.0013L26.5343 8.16411C26.793 7.90339 27.2141 7.90171 27.4748 8.16038C27.7355 8.41905 27.7372 8.84015 27.4785 9.10088Z" fill="#007FA8"/>
-<path d="M13.0149 8.23632L14.8521 10.059C15.1128 10.3176 15.1145 10.7387 14.8558 10.9995C14.5972 11.2602 14.1761 11.2619 13.9153 11.0032L12.0782 9.18055C11.8174 8.92188 11.8158 8.50078 12.0744 8.24005C12.3331 7.97932 12.7542 7.97765 13.0149 8.23632Z" fill="#007FA8"/>
-<path d="M11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621Z" fill="#DCFAF8"/>
-<path d="M1.10547 22.123C1.10566 19.716 2.69462 17.68 4.88086 17.0068C5.54954 13.9501 8.2719 11.6621 11.5293 11.6621C15.0714 11.6622 17.9798 14.3677 18.3037 17.8252C18.6052 17.7668 18.9168 17.7363 19.2354 17.7363C21.925 17.7365 24.1055 19.9168 24.1055 22.6064C24.1053 25.296 21.9249 27.4764 19.2354 27.4766C19.2234 27.4766 19.2112 27.4757 19.1992 27.4756H6.49707C6.48413 27.4757 6.47097 27.4766 6.45801 27.4766C6.44497 27.4766 6.43196 27.4757 6.41895 27.4756H6.23438V27.4707C3.38196 27.3534 1.10547 25.0043 1.10547 22.123ZM2.43555 22.123C2.43555 24.2879 4.14619 26.0534 6.28906 26.1416C6.30381 26.1422 6.31839 26.1444 6.33301 26.1455H19.2422C21.1332 26.1418 22.6759 24.6565 22.7705 22.7881L22.7754 22.6064C22.7754 20.7123 21.2878 19.166 19.417 19.0713L19.2354 19.0664C19.0018 19.0664 18.7749 19.0886 18.5566 19.1309C18.1881 19.2022 17.8062 19.1147 17.5059 18.8896C17.2056 18.6646 17.0145 18.3229 16.9795 17.9492C16.7271 15.2554 14.5225 13.1284 11.7949 12.998L11.5293 12.9922C8.9101 12.9922 6.71764 14.8319 6.17969 17.291C6.07717 17.7596 5.73086 18.1371 5.27246 18.2783C3.62841 18.7846 2.43574 20.3161 2.43555 22.123Z" fill="#007FA8"/>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop near me</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <circle cx="8" cy="8" r="7" stroke="#7B618F" stroke-width="1.2" />
 </svg>
-</div><div layer-name="Label" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;position:relative"><div layer-name="Label" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:15px;color:rgba(37,5,44,1)">1°C</span></div><div layer-name="Divider" style="color:#8A8C9A;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(138,140,154,1)">•</span></div><div layer-name="✎ Label" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Partly cloudy</span></div></div><div layer-name="Description" style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="✎ Description" style="color:#5E606D;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:400;line-height:normal;letter-spacing:0.22px;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:11px;color:rgba(94,96,109,1)">Wed, Dec 3</span></div></div></div></div></div><div layer-name="Icon Buttons " data-component-name="Icon Buttons " data-variant-name="State=Idle, Size=32" props='{State:Idle,Size:32}' style="display:flex;width:32px;height:32px;padding:8px;justify-content:center;align-items:center;aspect-ratio:1/1;border-radius:80px;position:relative"><div layer-name="page-actions" data-component-name="page-actions" style="display:flex;width:16px;height:16px;padding:0 2px 0 2.001px;justify-content:center;align-items:center;flex-shrink:0;position:relative"></div></div></div><div style="height:179px;align-self:stretch;position:relative"><div layer-name="Bookmarks and history" style="width:230px;color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:600;line-height:normal;position:absolute;left:0px;top:0px;height:17px"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:13px;color:rgba(94,96,109,1)">Bookmarks and history</span></div><div layer-name="Cards" style="display:flex;width:895px;flex-direction:column;align-items:flex-start;gap:2px;position:absolute;left:0px;top:29px;height:150px"><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:true,Show Link:false,Show Search:false,Icon:2589:6008,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Favicon" data-component-name="Favicon" style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="Favicon" data-component-name="Favicons" data-variant-name="Domain=Metalab" props='{Domain:Metalab}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;border-radius:2px;position:relative"><img layer-name="Screenshot 2025-09-23 at 19.32.49 1" style="width:18px;height:18px;flex-shrink:0;aspect-ratio:1/1;border-radius:2px;position:absolute;left:-1px;top:-1px" src="https://api.builder.io/api/v1/image/assets/TEMP/7bf546bda897b9bf3d7d70b1aa32687a5a37223e?width=36" alt="" /></div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">London - BBC Weather</span></div></div></div><div layer-name="Switch to tab" style="display:flex;justify-content:center;align-items:center;gap:4px;border-radius:99px;border:1px solid #6820F0;position:relative"><div layer-name="Go to this tab" style="color:#7338E2;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:11px;color:rgba(115,56,226,1)">Switch to tab</span></div><svg id="I2589:8675;800:3502" layer-name="arrow-right-small" data-component-name="arrow-right-small" style="width:12px;height:12px;position:relative" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M2.10742 6.00065C2.10742 5.72526 2.33084 5.50198 2.6062 5.50187L8.11013 5.50187C8.19698 5.50187 8.24049 5.39686 8.17908 5.33544L6.15918 3.31486C5.96473 3.12017 5.9648 2.80426 6.15918 2.60954C6.3539 2.41489 6.67047 2.41495 6.86523 2.60954L9.63745 5.38248C9.97862 5.72368 9.97859 6.27686 9.63745 6.61808L6.86523 9.39103C6.67046 9.5858 6.35395 9.5858 6.15918 9.39103C5.96458 9.19624 5.96446 8.87969 6.15918 8.68497L8.17828 6.66587C8.2397 6.60445 8.1962 6.49943 8.10934 6.49943L2.6062 6.49943C2.3309 6.49932 2.10751 6.27596 2.10742 6.00065Z" fill="#7338E2"/>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop open now</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:28px;height:28px; background:#f1f0fb;">
+              <img src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="Coffee" />
+            </div>
+            <div class="result-content">
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <p class="result-title" style="font-weight:700;">coffee</p>
+                <p class="result-meta" style="font-size:11px; letter-spacing:0.22px;">Beverage</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <p class="section-title">Bookmarks, history, and tabs</p>
+          <div class="cards">
+            <div class="card">
+              <div class="card-favicon">
+                <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Origin Coffee" />
+              </div>
+              <div class="card-text">
+                <p class="card-title">Origin Coffee: Speciality Coffee Online - Next Day Coff</p>
+              </div>
+            </div>
+            <div class="card filled">
+              <div class="card-favicon">
+                <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="Food" />
+              </div>
+              <div class="card-text" style="flex:1 1 0; min-width:0;">
+                <p class="card-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-favicon">
+                <div style="width:23px;height:23px;border-radius:5px; background:#f1f0fb;"></div>
+              </div>
+              <div class="card-text">
+                <p class="card-title">RAVE Coffee: Speciality Coffee Roasters | Shop Coffee</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
 </svg>
-</div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Hover" props='{Show Search:false,Icon:2589:6008,Show Switch:false,Show Link:false,Show Metadata:false,State:Hover}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;background:#F1F0FB;position:relative"><div layer-name="Favicon" data-component-name="Favicon" style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="Favicon" data-component-name="Favicons" data-variant-name="Domain=Metalab" props='{Domain:Metalab}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;border-radius:2px;position:relative"><img layer-name="Screenshot 2025-09-23 at 19.32.49 1" style="width:18px;height:18px;flex-shrink:0;aspect-ratio:1/1;border-radius:2px;position:absolute;left:-1px;top:-1px" src="https://api.builder.io/api/v1/image/assets/TEMP/43a7d7188e782778a99c7ca08e0499215a6e1f17?width=36" alt="" /></div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">UK weather warnings - Met Office</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:false,Icon:2589:6008,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Favicon" data-component-name="Favicon" style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="Favicon" data-component-name="Favicons" data-variant-name="Domain=Metalab" props='{Domain:Metalab}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;border-radius:2px;position:relative"><img layer-name="Screenshot 2025-09-23 at 19.32.49 1" style="width:18px;height:18px;flex-shrink:0;aspect-ratio:1/1;border-radius:2px;position:absolute;left:-1px;top:-1px" src="https://api.builder.io/api/v1/image/assets/TEMP/4b2e728c42108fe26bbfac3fead4bf79199780aa?width=36" alt="" /></div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">Machine Learning in Numerical Weather and Climate Models</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:false,Icon:2589:6008,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Favicon" data-component-name="Favicon" style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="Favicon" data-component-name="Favicons" data-variant-name="Domain=Metalab" props='{Domain:Metalab}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;border-radius:2px;position:relative"><img layer-name="Screenshot 2025-09-23 at 19.32.49 1" style="width:18px;height:18px;flex-shrink:0;aspect-ratio:1/1;border-radius:2px;position:absolute;left:-1px;top:-1px" src="https://api.builder.io/api/v1/image/assets/TEMP/028d331b88be40a72dbeff490e6f40c596c86aa0?width=36" alt="" /></div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">Another weather related past search reulst</span></div></div></div></div></div></div><div layer-name="List" style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;align-self:stretch;position:relative"><div layer-name="Google suggestions" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:13px;color:rgba(94,96,109,1)">Google suggestions</span></div><div layer-name="Suggestions" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;align-self:stretch;position:relative"><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:false,Icon:2589:6008,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Favicon" data-component-name="Favicon" style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name="Favicon" data-component-name="Favicons" data-variant-name="Domain=Metalab" props='{Domain:Metalab}' style="display:flex;width:16px;height:16px;justify-content:center;align-items:center;border-radius:2px;position:relative"><img layer-name="Screenshot 2025-09-23 at 19.32.49 1" style="width:18px;height:18px;flex-shrink:0;aspect-ratio:1/1;border-radius:2px;position:absolute;left:-1px;top:-1px" src="https://api.builder.io/api/v1/image/assets/TEMP/1727f083eceb6609d0121ed1b9fa4710c1420389?width=36" alt="" /></div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather related tab that is currently open</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Icon:2589:5842,Show Search:true,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Icon" data-component-name="Icon" props='{Icon:2589:6038}' style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><div layer-name=" history" data-component-name=" history" style="width:16px;height:16px;position:relative"><svg id="I2589:8683;775:5074;775:5040;954:4682" layer-name="Shape" style="width:14px;height:14px;fill:#7B618F;position:absolute;left:1px;top:1px" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M7 0C10.866 0 14 3.13401 14 7C14 10.866 10.866 14 7 14C3.13401 14 0 10.866 0 7C0 3.13401 3.13401 0 7 0ZM7 1.33008C3.86855 1.33008 1.33008 3.86855 1.33008 7C1.33008 10.1315 3.86855 12.6699 7 12.6699C10.1315 12.6699 12.6699 10.1315 12.6699 7C12.6699 3.86855 10.1315 1.33008 7 1.33008ZM7 3.03516C7.36727 3.03516 7.66504 3.33293 7.66504 3.7002V6.42285C7.66511 6.54927 7.74359 6.66183 7.83203 6.71289L10.2266 8.09473C10.5446 8.27838 10.6533 8.68587 10.4697 9.00391C10.286 9.32157 9.87941 9.43054 9.56152 9.24707L7.16797 7.86523C7.05726 7.80131 6.93215 7.72937 6.83008 7.65625C6.7161 7.57456 6.58851 7.46241 6.49121 7.29395C6.39395 7.12548 6.36045 6.95889 6.34668 6.81934C6.33438 6.69442 6.33496 6.55068 6.33496 6.42285V3.7002C6.33496 3.33293 6.63273 3.03516 7 3.03516Z" fill="#7B618F"/>
-</svg>
-</div></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather this we</span><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:15px;color:rgba(37,5,44,1)">ek in berlin</span></div></div><div layer-name="Search" style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="Divider" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">•</span></div><div layer-name="Search with" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Search with Google</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:true,Icon:2589:5842,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Icon" data-component-name="Icon" props='{Icon:2589:5840}' style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><svg id="I2589:8684;775:5074;775:5040" layer-name="Icon" data-component-name=" search" style="width:16px;height:16px;position:relative" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M7.11816 1C10.4972 1 13.2371 3.74013 13.2373 7.11914L13.2295 7.43457C13.1653 8.69826 12.7162 9.85966 11.999 10.8069C11.9374 10.8882 11.9433 11.0029 12.0153 11.0751L14.8011 13.8654C15.0608 14.1251 15.0608 14.5462 14.8011 14.8059C14.5414 15.0653 14.1203 15.0655 13.8607 14.8059L11.0741 12.0166C11.0019 11.9444 10.8872 11.9384 10.8057 12C9.78013 12.7762 8.50337 13.2383 7.11816 13.2383L6.80371 13.2305C3.57099 13.0666 1.00026 10.3925 1 7.11914C1.00023 3.74027 3.7393 1.00023 7.11816 1ZM7.11816 2.33105C4.47384 2.33129 2.33031 4.47481 2.33008 7.11914C2.33034 9.76344 4.47386 11.908 7.11816 11.9082C9.76267 11.9082 11.907 9.76358 11.9072 7.11914C11.907 4.47467 9.76269 2.33105 7.11816 2.33105Z" fill="#7B618F"/>
-</svg>
-</div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:600;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather this we</span><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:600;font-size:15px;color:rgba(37,5,44,1)">ekend</span></div></div><div layer-name="Search" style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="Divider" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">•</span></div><div layer-name="Search with" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Search with Google</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:true,Icon:2589:5842,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Icon" data-component-name="Icon" props='{Icon:2589:5840}' style="display:flex;padding:6px;justify-content:center;align-items:center;gap:4px;position:relative"><svg id="I2589:8685;775:5074;775:5040" layer-name="Icon" data-component-name=" search" style="width:16px;height:16px;position:relative" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M7.11816 1C10.4972 1 13.2371 3.74013 13.2373 7.11914L13.2295 7.43457C13.1653 8.69826 12.7162 9.85966 11.999 10.8069C11.9374 10.8882 11.9433 11.0029 12.0153 11.0751L14.8011 13.8654C15.0608 14.1251 15.0608 14.5462 14.8011 14.8059C14.5414 15.0653 14.1203 15.0655 13.8607 14.8059L11.0741 12.0166C11.0019 11.9444 10.8872 11.9384 10.8057 12C9.78013 12.7762 8.50337 13.2383 7.11816 13.2383L6.80371 13.2305C3.57099 13.0666 1.00026 10.3925 1 7.11914C1.00023 3.74027 3.7393 1.00023 7.11816 1ZM7.11816 2.33105C4.47384 2.33129 2.33031 4.47481 2.33008 7.11914C2.33034 9.76344 4.47386 11.908 7.11816 11.9082C9.76267 11.9082 11.907 9.76358 11.9072 7.11914C11.907 4.47467 9.76269 2.33105 7.11816 2.33105Z" fill="#7B618F"/>
-</svg>
-</div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather network</span></div></div><div layer-name="Search" style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="Divider" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">•</span></div><div layer-name="Search with" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Search with Google</span></div></div></div></div><div layer-name="Results" data-component-name="Results" data-variant-name="State=Default" props='{Show Switch:false,Show Link:false,Show Search:true,Icon:2589:5905,Show Metadata:false,State:Default}' style="display:flex;height:36px;max-width:1182px;padding:8px 4px;align-items:center;gap:12px;align-self:stretch;border-radius:24px;position:relative"><div layer-name="Preview" data-component-name="Preview" style="display:flex;width:28px;height:28px;justify-content:center;align-items:center;border-radius:99px;position:relative"><img layer-name="Image" style="width:28px;height:28px;flex-shrink:0;aspect-ratio:1/1;border-radius:10px;position:absolute;left:0px;top:0px" src="https://api.builder.io/api/v1/image/assets/TEMP/41e25a5786a5be1d882bdd0b40276407b33daf18?width=56" alt="" /></div><div layer-name="Content" style="display:flex;align-items:baseline;gap:8px;position:relative"><div layer-name="Results" style="display:flex;flex-direction:column;justify-content:center;align-items:flex-start;position:relative"><div layer-name="Label" style="color:#25052C;font-family:\'Segoe UI\';font-size:15px;font-style:normal;font-weight:700;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:15px;color:rgba(37,5,44,1)">weather </span><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:700;font-size:15px;color:rgba(37,5,44,1)">network</span></div></div><div layer-name="Search" style="display:flex;align-items:center;gap:8px;position:relative"><div layer-name="Divider" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">•</span></div><div layer-name="Search with" style="color:#5E606D;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(94,96,109,1)">Search with Google</span></div></div></div></div></div></div></div></div><!-- Annotations
-Label: Preview connected by colour highlight (see further UI explorations to the right) | Markdown: Preview connected by colour highlight (see further UI explorations to the right) -->
-<div style="display:flex;width:254px;height:529px;flex-direction:column;justify-content:space-between;align-items:flex-start;border-radius:20px;position:relative"><div style="display:flex;flex-direction:column;align-items:flex-start;gap:12px;position:relative"><img layer-name="Image" style="width:238px;height:215px;border-radius:16px;position:relative" src="https://api.builder.io/api/v1/image/assets/TEMP/89beb751173bebd7021c18bc192ea32ecb3b3497?width=476" alt="" /><div style="display:flex;width:238px;height:265px;flex-direction:column;align-items:flex-start;gap:4px;position:relative"><div layer-name="UK weather warnings - Met Office" style="align-self:stretch;color:#25052C;font-family:\'Segoe UI\';font-size:16px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:16px;color:rgba(37,5,44,1)">UK weather warnings - Met Office</span></div><div layer-name="Brits braced for bitter cold as -3C freeze to turn weather maps blue - 8 coldest counties" style="align-self:stretch;color:#393443;font-family:\'Segoe UI\';font-size:13px;font-style:normal;font-weight:400;line-height:normal;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:13px;color:rgba(57,52,67,1)">Brits braced for bitter cold as -3C freeze to turn weather maps blue - 8 coldest counties</span></div></div></div><svg id="2589:8707" style="display:flex;width:32px;height:32px;padding:0 3px;flex-direction:column;justify-content:center;align-items:center;gap:13.333px;position:relative;right:8px;top:8px;border-radius:0 0 0 10px;background:#F1F0FB" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 0H32V32H10C4.47715 32 0 27.5228 0 22V0Z" fill="#F1F0FB"/>
-<path d="M11.1733 17.9466L8.12234 15.413C7.92231 15.248 7.77679 15.0263 7.70484 14.7772C7.63289 14.528 7.63786 14.2629 7.71909 14.0166C7.79812 13.77 7.94979 13.553 8.15423 13.3941C8.35867 13.2352 8.60634 13.1417 8.86481 13.1259L12.8087 12.8709L13.3431 12.4709L14.7982 8.81502C14.9967 8.32003 15.4682 8 16.0005 8C16.5328 8 17.0043 8.32003 17.2027 8.81395V8.81502L18.6578 12.4709L19.1923 12.8709L23.1362 13.1259C23.6674 13.16 24.1176 13.5099 24.2819 14.0166C24.4472 14.5244 24.2883 15.0727 23.8786 15.413L20.833 17.9424L20.641 18.5739L21.6117 22.3876C21.743 22.905 21.5488 23.4395 21.1178 23.752C20.9085 23.9042 20.6584 23.9901 20.3998 23.9986C20.1412 24.0072 19.8859 23.938 19.667 23.8L16.3312 21.691H15.6687L12.334 23.8C11.8795 24.0838 11.3099 24.0635 10.8821 23.752C10.6719 23.6008 10.5123 23.3896 10.4242 23.1462C10.3361 22.9027 10.3235 22.6383 10.3882 22.3876L11.3568 18.5835L11.1733 17.9466Z" fill="#7B618F"/>
-</svg>
-<div style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;align-self:stretch;position:relative"><svg id="2589:8710" style="display:flex;width:238px;padding:4px 0;flex-direction:column;align-items:flex-start;gap:10px;position:relative" width="238" height="8" viewBox="0 0 238 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 4H238" stroke="#210340" stroke-opacity="0.2"/>
-</svg>
-<div style="display:flex;height:17px;justify-content:space-between;align-items:center;align-self:stretch;position:relative"><div layer-name="Link" style="display:flex;align-items:center;gap:8px;position:relative"><div style="display:flex;align-items:center;gap:4px;position:relative"><div layer-name="URL" style="color:#7338E2;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:400;line-height:normal;letter-spacing:0.22px;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:11px;color:rgba(115,56,226,1)">bbc.co.uk/weather</span></div></div></div><div layer-name="2hr ago" style="color:#393443;font-family:\'Segoe UI\';font-size:11px;font-style:normal;font-weight:400;line-height:normal;letter-spacing:0.22px;position:relative"><span style="font-family:Segoe UI, -apple-system, Roboto, Helvetica, sans-serif;font-weight:400;font-size:11px;color:rgba(57,52,67,1)">2hr ago</span></div></div></div></div></div></div>
+        </div>
+        <img class="hero-image" src="assets/231c6527ed06c080f29c5623b2eb738ccecb9f8b.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <p class="hero-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
+          <p class="hero-body">To make the best coffee at home, start with fresh, quality beans and filter water, grinding beans just before brewing with a consistent size.</p>
+          <div style="display:flex; align-items:center; gap:6px; background:#edeff7; border-radius:40px; padding:4px 12px; width:100%;">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
+              <img src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            </div>
+            <p class="hero-link">domain.com/home/kitchen-and-household/i-asked-10-coffee...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

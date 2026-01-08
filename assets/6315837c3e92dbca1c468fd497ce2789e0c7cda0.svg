@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Google Drive">
+<path id="Vector" d="M5.20624 0H10.7687L16 9.01875H10.425L5.20624 0Z" fill="url(#paint0_linear_5_2243)"/>
+<path id="Vector_2" d="M16 9.01874L13.2125 13.8375H2.77499L5.56874 9.01874H16Z" fill="url(#paint1_linear_5_2243)"/>
+<path id="Vector_3" d="M2.775 13.8375L0 9.01875L5.20625 0L8 4.83125L2.775 13.8375Z" fill="url(#paint2_linear_5_2243)"/>
+<path id="Vector_4" opacity="0.1" d="M2.77499 13.8375L7.96874 9.01875H5.56874L2.77499 13.8375ZM16 9.01875H10.4312L9.20624 6.90625L16 9.01875ZM5.20624 0L6.81249 6.875L7.99999 4.83125L5.20624 0Z" fill="var(--fill-0, black)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_5_2243" x1="5.20624" y1="0" x2="14.0814" y2="10.6219" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F6C338"/>
+<stop offset="0.523" stop-color="#FFD351"/>
+<stop offset="1" stop-color="#F6C338"/>
+</linearGradient>
+<linearGradient id="paint1_linear_5_2243" x1="16" y1="9.01874" x2="12.9" y2="17.5267" gradientUnits="userSpaceOnUse">
+<stop stop-color="#286EE6"/>
+<stop offset="0.521" stop-color="#4286FB"/>
+<stop offset="1" stop-color="#286EE6"/>
+</linearGradient>
+<linearGradient id="paint2_linear_5_2243" x1="5.22312" y1="1.4242e-07" x2="-0.834667" y2="11.9555" gradientUnits="userSpaceOnUse">
+<stop stop-color="#069B5A"/>
+<stop offset="0.531" stop-color="#11AA62"/>
+<stop offset="1" stop-color="#069B5A"/>
+</linearGradient>
+</defs>
+</svg>
