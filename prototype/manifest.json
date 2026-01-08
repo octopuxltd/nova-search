@@ -22,7 +22,13 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["figma-design.html", "figma-image.jpg", "search-suggestions-overlay.html"],
+      "resources": [
+        "figma-design.html",
+        "figma-design.js",
+        "figma-image.jpg",
+        "search-suggestions-overlay.html",
+        "assets/*"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
