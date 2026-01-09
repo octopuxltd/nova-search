@@ -1,0 +1,7 @@
+{
+  "name": "nova_toggle",
+  "description": "Toggle Firefox userChrome.css for Nova extension",
+  "path": "/Users/pannett/Vibe coding/nova/native/nova_toggle.py",
+  "type": "stdio",
+  "allowed_extensions": ["nova@octopuxltd.com"]
+}

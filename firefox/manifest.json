@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Nova Search & Suggest Prototype",
+  "version": "1.0.0",
+  "description": "A Firefox extension simulating browser chrome UI",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "nova@octopuxltd.com",
+      "strict_min_version": "109.0"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "nativeMessaging"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "figma-design.html",
+        "figma-design.js",
+        "search-suggestions-overlay.html",
+        "assets/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_title": "Nova Search & Suggest Prototype"
+  }
+}

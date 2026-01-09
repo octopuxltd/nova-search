@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+:root {
+  --bg-surface: #ffffff;
+  --bg-secondary: #f1f0fb;
+  --bg-active: #e6d7f5;
+  --bg-chip: rgba(255, 255, 255, 0.5);
+  --text-primary: #25052c;
+  --text-secondary: #393443;
+  --text-tertiary: #5e606d;
+  --text-inactive: #8a8c9a;
+  --text-link: #7338e2;
+  --border-strong: #945af2;
+  --shadow: 0 4px 12px 2px rgba(58, 15, 110, 0.24);
+  --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.overlay-shell {
+  width: 100%;
+  background: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  border-radius: 40px;
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 2px 0 inset rgba(0,0,0,0.1);
+  padding: 2px 4px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px 4px 6px;
+  background: #e1e3f2;
+  border-radius: 80px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.chip svg { width: 16px; height: 16px; }
+
+.bar-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: var(--text-primary);
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
+.bar-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text-primary);
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+  height: auto;
+}
+
+.bar-input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.bar-input::placeholder {
+  color: var(--text-inactive);
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-radius: 24px;
+  min-height: 36px;
+  width: 100%;
+}
+
+.result-row.keyboard-highlight, .card.keyboard-highlight { background: var(--bg-active); }
+.overlay-shell:not(.keyboard-nav) .result-row:hover,
+.overlay-shell:not(.keyboard-nav) .card:hover { background: var(--bg-active); }
+
+.result-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  background: var(--bg-chip);
+  overflow: hidden;
+}
+
+.result-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+.result-content {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.result-meta { color: var(--text-tertiary); font-size: 13px; margin: 0; white-space: nowrap; }
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  width: 100%;
+}
+
+
+.card-favicon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  border: 2px solid var(--bg-secondary);
+}
+
+.card-favicon img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 15px;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.layout {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.left { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.right {
+  width: 252px;
+  flex: 0 0 auto;
+  background: var(--bg-secondary);
+  border-radius: 18px;
+  padding: 16px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.layout:has(.card[data-preview="1"]:hover) .right[data-for="1"],
+.layout:has(.card[data-preview="2"]:hover) .right[data-for="2"],
+.layout:has(.card[data-preview="3"]:hover) .right[data-for="3"] {
+  display: flex;
+}
+
+.hero-image {
+  width: 100%;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.hero-title { font-size: 16px; color: var(--text-primary); margin: 0; }
+.hero-body { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.3; }
+.hero-link { font-size: 11px; color: var(--text-link); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.hero-url-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #edeff7;
+  border-radius: 40px;
+  padding: 4px 12px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.badge {
+  position: absolute;
+  top: 56px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px 0 0 10px;
+  background: var(--bg-secondary);
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  .right { width: 100%; }
+}
+</style>
+</head>
+<body>
+  <div class="overlay-shell">
+    <div class="bar">
+      <div class="chip">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="8" fill="#4285F4" opacity="0.12"/>
+          <path d="M7.6 8.4H11c-.2.9-.6 1.6-1.2 2.1-.5.4-1.2.7-2 .7-1 0-1.9-.3-2.6-1-.7-.7-1.1-1.6-1.1-2.6 0-1 .4-1.9 1.1-2.6C5.9 3.3 6.8 3 7.9 3c.8 0 1.5.2 2 .6.5.4.9.9 1.1 1.6H7.9v1.2Z" fill="#4285F4"/>
+</svg>
+        <span style="font-size:13px;">Google</span>
+      </div>
+      <div class="bar-text">
+        <input class="bar-input" type="text" placeholder="Search or enter address" autofocus />
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="left">
+        <div class="list">
+          <p class="section-title">Google suggestions</p>
+          <div class="result-row">
+            <div class="result-icon" style="background: #fff; border: 1px solid #edeff7;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+</svg>
+            </div>
+            <div class="result-content">
+              <p class="result-title">coffee shop</p>
+              <p class="result-meta">• Search with Google</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <div class="result-row" style="padding: 0; align-items: stretch;">
+            <div style="display:flex; gap:12px; padding:4px 12px; align-items:center; width:100%;">
+              <div style="width:60px;height:60px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#ebe7ff;display:grid;place-items:center;">
+                <img src="assets/d39cb9ac9cda75209c68c64ce2055705731df45d.png" alt="Arabica" style="width:100%;height:100%;object-fit:cover;" />
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                <p class="result-title" style="font-weight:600;">Arabica % Broadway Market</p>
+                <p class="result-meta" style="font-size:11px; letter-spacing:0.22px;">33 Broadway Market, London E8 4PH • $ • <span style="color:#186d00;font-weight:600;">Open</span> until 5pm today • 4.3 (1.1k)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <p class="section-title">Google suggestions</p>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop nearby</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop near me</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:24px;height:24px;">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="result-content">
+              <p class="result-title" style="font-weight:600;">coffee shop open now</p>
+              <p class="result-meta" style="opacity:0;">• Search with Google</p>
+            </div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="width:28px;height:28px; background:#f1f0fb;">
+              <img src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="Coffee" />
+            </div>
+            <div class="result-content">
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <p class="result-title" style="font-weight:700;">coffee</p>
+                <p class="result-meta" style="font-size:11px; letter-spacing:0.22px;">Beverage</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="list">
+          <p class="section-title">Bookmarks, history, and tabs</p>
+          <div class="cards">
+            <div class="card" data-preview="1">
+              <div class="card-favicon">
+                <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Origin Coffee" />
+              </div>
+              <div class="card-text">
+                <p class="card-title">Origin Coffee: Speciality Coffee Online - Next Day Coff</p>
+              </div>
+            </div>
+            <div class="card" data-preview="2">
+              <div class="card-favicon">
+                <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="Food" />
+              </div>
+              <div class="card-text" style="flex:1 1 0; min-width:0;">
+                <p class="card-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
+              </div>
+            </div>
+            <div class="card" data-preview="3">
+              <div class="card-favicon">
+                <div style="width:23px;height:23px;border-radius:5px; background:#f1f0fb;"></div>
+              </div>
+              <div class="card-text">
+                <p class="card-title">RAVE Coffee: Speciality Coffee Roasters | Shop Coffee</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview 1: Origin Coffee -->
+      <div class="right" data-for="1" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
+          </svg>
+        </div>
+        <img class="hero-image" src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+          <p class="hero-title">Origin Coffee: Speciality Coffee Online</p>
+          <p class="hero-body">Award-winning speciality coffee roasters. Fresh roasted coffee delivered next day. Single origin, blends, and subscriptions available.</p>
+          <div class="hero-url-line">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
+              <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            </div>
+            <p class="hero-link">origincoffee.co.uk</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview 2: Coffee Pros Article -->
+      <div class="right" data-for="2" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
+          </svg>
+        </div>
+        <img class="hero-image" src="assets/231c6527ed06c080f29c5623b2eb738ccecb9f8b.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+          <p class="hero-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
+          <p class="hero-body">To make the best coffee at home, start with fresh, quality beans and filter water, grinding beans just before brewing with a consistent size.</p>
+          <div class="hero-url-line">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
+              <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            </div>
+            <p class="hero-link">foodandwine.com/kitchen/i-asked-10-coffee-pros...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview 3: RAVE Coffee -->
+      <div class="right" data-for="3" aria-label="Preview card">
+        <div class="badge">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
+          </svg>
+        </div>
+        <img class="hero-image" src="assets/f86101981b6688d618e0898a30289a5a49ddb208.png" alt="Preview" />
+        <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
+          <p class="hero-title">RAVE Coffee: Speciality Coffee Roasters</p>
+          <p class="hero-body">Independent UK coffee roasters since 2014. Freshly roasted speciality coffee beans, equipment, and brewing guides. Free delivery on orders over £25.</p>
+          <div class="hero-url-line">
+            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden; background:#1a1a2e; display:grid; place-items:center;">
+              <span style="color:white; font-size:10px; font-weight:bold;">R</span>
+            </div>
+            <p class="hero-link">ravecoffee.co.uk</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
