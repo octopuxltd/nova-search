@@ -29,9 +29,9 @@
 
   function updateGhost(text, title) {
     const { domain, rest } = splitUrl(text);
-    const d = document.querySelector('.url-domain');
-    const t = document.querySelector('.url-title');
-    const r = document.querySelector('.url-rest');
+    const d = document.querySelector('.fxnova-url-domain');
+    const t = document.querySelector('.fxnova-url-title');
+    const r = document.querySelector('.fxnova-url-rest');
     
     if (d) d.textContent = domain;
     if (t) {
@@ -40,12 +40,12 @@
     }
     if (r) r.textContent = rest;
     
-    const input = document.querySelector('.url-field');
+    const input = document.querySelector('.fxnova-url-field');
     if (input && text !== undefined) input.value = text;
   }
 
   function updateTabTitlesFromPageTitle(href, providedTitle) {
-    const el = document.querySelector('.tab-title-primary');
+    const el = document.querySelector('.fxnova-tab-title-primary');
     if (!el) return;
     let title = providedTitle || document.title || '';
     if ((!title || title === '') && href) {
@@ -57,15 +57,15 @@
       }
     }
     if (!title) title = 'New tab';
-    const truncated = title.length > 10 ? `${title.slice(0, 10)}…` : title;
+    const truncated = title.length > 25 ? `${title.slice(0, 25)}…` : title;
     el.textContent = truncated || 'New tab';
 
-    const secondary = document.querySelector('.tab-title-secondary');
+    const secondary = document.querySelector('.fxnova-tab-title-secondary');
     if (secondary) secondary.textContent = 'Wikipedia';
   }
 
   function updateFavicons(faviconUrl) {
-    const fav = document.querySelector('.tab-fav-primary');
+    const fav = document.querySelector('.fxnova-tab-fav-primary');
     if (fav) {
       fav.src = faviconUrl || defaultFav;
       fav.alt = 'Favicon';
@@ -73,15 +73,15 @@
   }
 
   function sendUrlRect() {
-    const urlEl = document.querySelector('.url-input');
+    const urlEl = document.querySelector('.fxnova-url-input');
     if (!urlEl || !parentWin) return;
     const rect = urlEl.getBoundingClientRect();
     parentWin.postMessage({ type: 'nova:url-click', rect }, '*');
   }
 
   function wire() {
-    const input = document.querySelector('.url-field');
-    const urlEl = document.querySelector('.url-input');
+    const input = document.querySelector('.fxnova-url-field');
+    const urlEl = document.querySelector('.fxnova-url-input');
     updateTabTitlesFromPageTitle();
     if (urlEl) {
       urlEl.addEventListener('click', sendUrlRect);
@@ -115,23 +115,37 @@
         const backBtn = document.getElementById('back-btn');
         const forwardBtn = document.getElementById('forward-btn');
         if (backBtn) {
-          backBtn.classList.toggle('inactive', !data.canGoBack);
+          backBtn.classList.toggle('fxnova-inactive', !data.canGoBack);
         }
         if (forwardBtn) {
-          forwardBtn.classList.toggle('inactive', !data.canGoForward);
+          forwardBtn.classList.toggle('fxnova-inactive', !data.canGoForward);
         }
       }
     });
 
-    // Toggle browser chrome button
-    const toggleBtn = document.getElementById('toggle-chrome-btn');
-    console.log('[Nova Iframe] Toggle button found:', !!toggleBtn);
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-        console.log('[Nova Iframe] Toggle button clicked, sending message');
-        parentWin.postMessage({ type: 'nova:toggle-chrome' }, '*');
+    // App menu - toggle in parent page
+    const appMenuBtn = document.getElementById('app-menu-btn');
+    console.log('[Nova Iframe] App menu button found:', !!appMenuBtn);
+    
+    if (appMenuBtn) {
+      appMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rect = appMenuBtn.getBoundingClientRect();
+        parentWin.postMessage({ 
+          type: 'nova:toggle-extension-menu', 
+          rect
+        }, '*');
       });
     }
+    
+    // Close extension menu when clicking anywhere else in the toolbar
+    document.addEventListener('click', () => {
+      parentWin.postMessage({ type: 'nova:close-extension-menu' }, '*');
+    });
+    
+    // Puzzle piece button - no longer used for menu
+    const toggleBtn = document.getElementById('toggle-chrome-btn');
+    console.log('[Nova Iframe] Toggle button found:', !!toggleBtn);
 
     // Reload button
     const reloadBtn = document.getElementById('reload-btn');
@@ -164,4 +178,3 @@
     wire();
   }
 })();
-

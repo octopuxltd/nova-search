@@ -20,6 +20,7 @@ browserAPI.runtime.onInstalled.addListener((details) => {
 // Handle messages from content script
 browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('[Nova Background] Received message:', request);
+  
   if (request.action === 'toggleChrome') {
     console.log('[Nova Background] Toggle chrome requested, calling native messaging');
     // Send message to native app to toggle userChrome.css

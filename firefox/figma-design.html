@@ -42,7 +42,7 @@ body {
   width: 100%;
 }
 
-.anchor {
+.fxnova-anchor {
   width: 100%;
   background: var(--background-surface-primary);
   border: 1px solid var(--stroke-anchor);
@@ -55,7 +55,7 @@ body {
   gap: 0;
 }
 
-.tab-bar {
+.fxnova-tab-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -66,20 +66,20 @@ body {
   width: 100%;
 }
 
-.pinned {
+.fxnova-pinned {
   display: flex;
   align-items: center;
   gap: 2px;
   flex: 0 0 auto;
 }
 
-.divider {
+.fxnova-divider {
   width: 1px;
   height: 21px;
   background: rgba(33, 3, 64, 0.08);
 }
 
-.tab-strip {
+.fxnova-tab-strip {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -87,7 +87,7 @@ body {
   min-width: 0;
 }
 
-.tab {
+.fxnova-tab {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -106,27 +106,27 @@ body {
   text-overflow: ellipsis;
 }
 
-.tab.active {
+.fxnova-tab.fxnova-active {
   background: #ffffff;
   color: var(--text-primary);
   border-color: #945af2;
 }
 
-.tab img {
+.fxnova-tab img {
   width: 16px;
   height: 16px;
   object-fit: cover;
   border-radius: 2px;
 }
 
-.right-controls {
+.fxnova-right-controls {
   display: flex;
   align-items: center;
   gap: 6px;
   flex: 0 0 auto;
 }
 
-.icon-button {
+.fxnova-icon-button {
   appearance: none;
   border: 1px solid transparent;
   background: transparent;
@@ -141,29 +141,29 @@ body {
   color: var(--icon-primary);
 }
 
-.icon-button.small {
+.fxnova-icon-button.fxnova-small {
   width: 28px;
   height: 28px;
 }
 
-.icon-button.inactive {
+.fxnova-icon-button.fxnova-inactive {
   opacity: 0.5;
 }
 
-.icon {
+.fxnova-icon {
   width: 16px;
   height: 16px;
   display: block;
 }
 
-.window-controls {
+.fxnova-window-controls {
   display: flex;
   align-items: center;
   gap: 2px;
   padding-left: 4px;
 }
 
-.caption-btn {
+.fxnova-caption-btn {
   width: 46px;
   height: 32px;
   border: none;
@@ -174,12 +174,12 @@ body {
   border-radius: 0;
 }
 
-.caption-btn:last-child,
-.caption-btn.close {
+.fxnova-caption-btn:last-child,
+.fxnova-caption-btn.fxnova-close {
   border-top-right-radius: 7px;
 }
 
-.address-bar {
+.fxnova-address-bar {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -189,15 +189,15 @@ body {
   width: 100%;
 }
 
-.address-left,
-.address-right {
+.fxnova-address-left,
+.fxnova-address-right {
   display: flex;
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
 }
 
-.url-input {
+.fxnova-url-input {
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -208,9 +208,10 @@ body {
   padding: 4px 6px 4px 6px;
   min-height: 32px;
   position: relative;
+  cursor: text;
 }
 
-.url-field {
+.fxnova-url-field {
   flex: 1 1 auto;
   min-width: 0;
   border: none;
@@ -222,19 +223,32 @@ body {
   caret-color: var(--text-primary);
 }
 
-.url-field:focus {
+.fxnova-url-field::selection {
+  background: #b4d7ff;
   color: transparent;
 }
 
-.url-text {
+.fxnova-url-field::-moz-selection {
+  background: #b4d7ff;
+  color: transparent;
+}
+
+.fxnova-url-field:focus {
+  color: transparent;
+}
+
+.fxnova-url-text {
   position: relative;
   flex: 1 1 auto;
   min-width: 0;
+  overflow: hidden;
+  cursor: text;
 }
 
-.url-ghost {
+.fxnova-url-ghost {
   position: absolute;
   left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   top: 50%;
@@ -245,30 +259,32 @@ body {
   font-size: 15px;
   font-family: var(--font-sans);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.url-domain {
+.fxnova-url-domain {
   color: var(--text-primary);
 }
 
-.url-title {
+.fxnova-url-title {
   color: var(--text-tertiary);
 }
 
-.url-rest {
+.fxnova-url-rest {
   color: var(--text-tertiary);
   display: none;
 }
 
-.url-text:hover .url-title {
+.fxnova-url-text:hover .fxnova-url-title {
   display: none;
 }
 
-.url-text:hover .url-rest {
+.fxnova-url-text:hover .fxnova-url-rest {
   display: inline;
 }
 
-.search-menu {
+.fxnova-search-menu {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -276,13 +292,13 @@ body {
   border-radius: var(--radius-pill);
 }
 
-.search-menu img {
+.fxnova-search-menu img {
   width: 16px;
   height: 16px;
   object-fit: contain;
 }
 
-.url-placeholder {
+.fxnova-url-placeholder {
   color: var(--text-inactive);
   font-size: 15px;
   white-space: nowrap;
@@ -290,7 +306,7 @@ body {
   text-overflow: ellipsis;
 }
 
-.vpn-pill {
+.fxnova-vpn-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -302,7 +318,7 @@ body {
   font-size: 12px;
 }
 
-.vpn-dot {
+.fxnova-vpn-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -310,12 +326,12 @@ body {
   display: inline-block;
 }
 
-.plus-icon {
+.fxnova-plus-icon {
   font-size: 16px;
   line-height: 16px;
 }
 
-img.favicon {
+img.fxnova-favicon {
   width: 16px;
   height: 16px;
   object-fit: cover;
@@ -323,24 +339,24 @@ img.favicon {
 }
 
 @media (max-width: 640px) {
-  .tab {
+  .fxnova-tab {
     width: 140px;
   }
-  .window-controls {
+  .fxnova-window-controls {
     display: none;
   }
-  .pinned .divider {
+  .fxnova-pinned .fxnova-divider {
     display: none;
   }
 }
 </style>
 </head>
 <body>
-  <div class="anchor" data-name="anchor">
-    <div class="tab-bar">
-      <div class="pinned">
-        <button class="icon-button" aria-label="Gmail">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <div class="fxnova-anchor" data-name="anchor">
+    <div class="fxnova-tab-bar">
+      <div class="fxnova-pinned">
+        <button class="fxnova-icon-button" aria-label="Gmail">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M1.09091 14.0031H3.63636V7.82128L0 5.09401V12.9122C0 13.5158 0.489091 14.0031 1.09091 14.0031Z" fill="#4285F4"/>
 <path d="M12.3636 14.0031H14.9091C15.5127 14.0031 16 13.514 16 12.9122V5.09401L12.3636 7.82128" fill="#34A853"/>
 <path d="M12.3636 3.094V7.82128L16 5.094V3.63946C16 2.29037 14.46 1.52128 13.3818 2.33037" fill="#FBBC04"/>
@@ -348,110 +364,110 @@ img.favicon {
 <path d="M0 3.63946V5.094L3.63636 7.82128V3.094L2.61818 2.33037C1.53818 1.52128 0 2.29037 0 3.63946" fill="#C5221F"/>
 </svg>
         </button>
-        <button class="icon-button" aria-label="YouTube">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button" aria-label="YouTube">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="1.5" y="3.25" width="13" height="9.5" rx="2" fill="#FF0000"/>
             <path d="M6.8 5.5L11 8L6.8 10.5V5.5Z" fill="white"/>
           </svg>
         </button>
-        <div class="divider" aria-hidden="true"></div>
+        <div class="fxnova-divider" aria-hidden="true"></div>
       </div>
 
-      <div class="tab-strip">
-        <div class="tab active">
-          <img class="favicon tab-fav-primary" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='16' height='16' rx='2' fill='%234B3F72'/><text x='4' y='12' font-size='9' fill='white' font-family='Segoe UI'>W</text></svg>" alt="Tab favicon"/>
-          <span class="tab-title-primary">Tab title</span>
+      <div class="fxnova-tab-strip">
+        <div class="fxnova-tab fxnova-active">
+          <img class="fxnova-favicon fxnova-tab-fav-primary" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='16' height='16' rx='2' fill='%234B3F72'/><text x='4' y='12' font-size='9' fill='white' font-family='Segoe UI'>W</text></svg>" alt="Tab favicon"/>
+          <span class="fxnova-tab-title-primary">Tab title</span>
         </div>
-        <div class="tab">
-          <img class="favicon" src="https://www.wikipedia.org/static/favicon/wikipedia.ico" alt="Wikipedia favicon"/>
-          <span class="tab-title-secondary">Wikipedia</span>
+        <div class="fxnova-tab">
+          <img class="fxnova-favicon" src="https://www.wikipedia.org/static/favicon/wikipedia.ico" alt="Wikipedia favicon"/>
+          <span class="fxnova-tab-title-secondary">Wikipedia</span>
         </div>
-        <button class="icon-button" aria-label="Add tab">
-          <span class="plus-icon">+</span>
+        <button class="fxnova-icon-button" aria-label="Add tab">
+          <span class="fxnova-plus-icon">+</span>
         </button>
       </div>
 
-      <div class="right-controls">
-        <button class="icon-button" aria-label="More tabs">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="fxnova-right-controls">
+        <button class="fxnova-icon-button" aria-label="More tabs">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M12.8907 4.83524C13.1658 4.59063 13.5868 4.61539 13.8314 4.89058C14.076 5.16577 14.0513 5.58672 13.7761 5.83134L8.44274 11.1647C8.19015 11.3892 7.80992 11.3892 7.55733 11.1647L2.22399 5.83134C1.94881 5.58672 1.92404 5.16577 2.16866 4.89058C2.41327 4.61539 2.83422 4.59063 3.10941 4.83524L7.5263 9.29623C7.74943 9.52159 7.86099 9.63426 8.00004 9.63426C8.13908 9.63426 8.25064 9.52159 8.47378 9.29623L12.8907 4.83524Z" fill="#7B618F"/>
 </svg>
         </button>
-        <button class="icon-button" aria-label="Profile">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button" aria-label="Profile">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="8" cy="5.5" r="3" fill="#7B618F" opacity="0.9"/>
             <path d="M3.5 13c0-2.485 2.015-4.5 4.5-4.5s4.5 2.015 4.5 4.5" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
 </svg>
         </button>
-        <button class="icon-button" aria-label="Menu">
-          <svg class="icon" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button" id="app-menu-btn" aria-label="Menu">
+          <svg class="fxnova-icon" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M11.2783 7.39355C11.6673 7.36228 12.001 7.66932 12.001 8.05957C12.0008 8.40294 11.7387 8.6888 11.3965 8.7168C10.2603 8.80973 7.76267 8.99704 6.00098 8.99707C4.23918 8.99707 1.74065 8.80974 0.604492 8.7168C0.262234 8.6888 0.000141229 8.40294 0 8.05957C0 7.66937 0.33376 7.36238 0.722656 7.39355C1.90664 7.48913 4.29815 7.66309 6.00098 7.66309C7.70378 7.66306 10.0944 7.48912 11.2783 7.39355Z" fill="#7B618F"/>
             <path d="M11.334 3.83008C11.7022 3.83008 12.001 4.12888 12.001 4.49707C12.001 4.86526 11.7022 5.16406 11.334 5.16406H0.666016C0.298014 5.16384 6.76467e-07 4.86512 0 4.49707C0 4.12902 0.298013 3.8303 0.666016 3.83008H11.334Z" fill="#7B618F"/>
             <path d="M6.00098 0C7.76252 2.84194e-05 10.2602 0.185245 11.3965 0.277344C11.739 0.305195 12.001 0.591877 12.001 0.935547C12.0009 1.32558 11.6671 1.63267 11.2783 1.60156C10.0945 1.50687 7.70386 1.33401 6.00098 1.33398C4.29799 1.33398 1.90651 1.50687 0.722656 1.60156C0.333832 1.63267 0.000121859 1.32558 0 0.935547C0 0.591931 0.262051 0.305272 0.604492 0.277344C1.74083 0.185238 4.23941 0 6.00098 0Z" fill="#7B618F"/>
 </svg>
         </button>
-        <div class="window-controls" aria-label="Window controls">
-          <button class="caption-btn" aria-label="Minimize">─</button>
-          <button class="caption-btn" aria-label="Maximize">□</button>
-          <button class="caption-btn close" aria-label="Close">✕</button>
+        <div class="fxnova-window-controls" aria-label="Window controls">
+          <button class="fxnova-caption-btn" aria-label="Minimize">─</button>
+          <button class="fxnova-caption-btn" aria-label="Maximize">□</button>
+          <button class="fxnova-caption-btn fxnova-close" aria-label="Close">✕</button>
         </div>
       </div>
     </div>
 
-    <div class="address-bar">
-      <div class="address-left">
-        <button class="icon-button" aria-label="Sidebar">
-          <svg class="icon" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="fxnova-address-bar">
+      <div class="fxnova-address-left">
+        <button class="fxnova-icon-button" aria-label="Sidebar">
+          <svg class="fxnova-icon" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.33008 0C7.36464 0 8.3715 0.0890591 9.32812 0.191406C10.966 0.36663 12.2759 1.67882 12.458 3.3125C12.5651 4.27371 12.6611 5.28759 12.6611 6.33008C12.6611 7.37278 12.5652 8.38728 12.458 9.34863C12.2759 10.9823 10.9659 12.2936 9.32812 12.4688C8.37149 12.5711 7.36467 12.6611 6.33008 12.6611C5.29549 12.6611 4.2887 12.5711 3.33203 12.4688C1.69436 12.2935 0.38426 10.9822 0.202148 9.34863C0.0949864 8.38726 0 7.37278 0 6.33008C1.69958e-05 5.28762 0.0950127 4.2737 0.202148 3.3125C0.384235 1.67889 1.69433 0.366709 3.33203 0.191406C4.2887 0.089053 5.29549 1.60436e-05 6.33008 0ZM6.33008 1.5C5.80605 1.50001 5.28514 1.52613 4.76562 1.56543V11.0957C5.28514 11.135 5.80606 11.1611 6.33008 11.1611C7.28317 11.1611 8.2266 11.0784 9.16895 10.9775C10.1037 10.8775 10.8632 10.1202 10.9678 9.18262C11.0735 8.23413 11.1611 7.28672 11.1611 6.33008C11.1611 5.37361 11.0735 4.42686 10.9678 3.47852C10.8633 2.54088 10.1037 1.78366 9.16895 1.68359C8.2266 1.58277 7.28317 1.5 6.33008 1.5Z" fill="#7B618F"/>
 </svg>
         </button>
-        <button class="icon-button inactive" id="back-btn" aria-label="Back">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button fxnova-inactive" id="back-btn" aria-label="Back">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M7.54333 1.93122C7.28372 1.67161 6.86165 1.67177 6.60193 1.93122L1.35779 7.17634C0.902865 7.63131 0.902841 8.36886 1.35779 8.8238L6.60193 14.0689C6.86164 14.3284 7.2837 14.3286 7.54333 14.0689C7.80273 13.8093 7.80276 13.3871 7.54333 13.1275L3.42098 9.00606C3.29497 8.88007 3.38419 8.66462 3.56239 8.66462H14.3236C14.6907 8.66444 14.9886 8.36674 14.9886 7.99958C14.9884 7.63262 14.6906 7.33473 14.3236 7.33455H3.56419C3.38602 7.33455 3.29678 7.11914 3.42275 6.99314L7.54333 2.87165C7.80231 2.61201 7.80252 2.19074 7.54333 1.93122Z" fill="#7B618F"/>
 </svg>
         </button>
-        <button class="icon-button inactive" id="forward-btn" aria-label="Forward">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button fxnova-inactive" id="forward-btn" aria-label="Forward">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.46191 1.93122C8.72153 1.6716 9.1436 1.67176 9.40332 1.93122L14.6475 7.17634C15.1024 7.6313 15.1024 8.36885 14.6475 8.8238L9.40332 14.0689C9.14361 14.3284 8.72155 14.3285 8.46191 14.0689C8.20252 13.8093 8.20249 13.3871 8.46191 13.1275L12.5843 9.00605C12.7103 8.88007 12.6211 8.66462 12.4429 8.66462H1.68164C1.31453 8.66443 1.0166 8.36673 1.0166 7.99958C1.01683 7.63262 1.31467 7.33472 1.68164 7.33454H12.4411C12.6192 7.33454 12.7085 7.11913 12.5825 6.99313L8.46191 2.87165C8.20294 2.612 8.20273 2.19073 8.46191 1.93122Z" fill="#7B618F"/>
 </svg>
         </button>
-        <button class="icon-button" id="reload-btn" aria-label="Refresh">
-          <svg class="icon" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button" id="reload-btn" aria-label="Refresh">
+          <svg class="fxnova-icon" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6.5 0C7.95467 0 9.29622 0.479553 10.3789 1.28711L10.3809 1.28516C10.9191 1.6731 11.3778 2.15198 11.7402 2.69434C11.7733 2.74376 11.8501 2.73077 11.8633 2.67285L11.9512 2.28418C12.0326 1.92538 12.3902 1.70026 12.749 1.78125C13.1077 1.86265 13.3329 2.21933 13.252 2.57812L12.9219 4.03613C12.8914 4.17079 12.8557 4.33733 12.8047 4.47461C12.7468 4.63027 12.6382 4.83949 12.4072 4.98535C12.1762 5.13101 11.9408 5.13777 11.7754 5.12305C11.6329 5.11034 11.4709 5.07406 11.3379 5.04395L11.3271 5.04199L9.87109 4.71191C9.51202 4.63063 9.28694 4.27313 9.36816 3.91406C9.44959 3.55523 9.80612 3.33 10.165 3.41113L10.5361 3.49512C10.5938 3.50779 10.6379 3.44437 10.6045 3.39551C10.3548 3.0308 10.0471 2.70548 9.69043 2.43359V2.43457C8.81227 1.74298 7.70486 1.33008 6.5 1.33008C3.64469 1.33008 1.33008 3.64469 1.33008 6.5C1.33008 9.35531 3.64469 11.6699 6.5 11.6699C8.90731 11.6699 10.9303 10.0243 11.5059 7.79688H11.5078L11.5312 7.73242C11.664 7.39048 12.0494 7.22036 12.3916 7.35254C12.7321 7.48445 12.9019 7.867 12.7734 8.20801C12.0234 10.9693 9.49879 13 6.5 13C2.91015 13 0 10.0899 0 6.5C0 2.91015 2.91015 0 6.5 0Z" fill="#7B618F"/>
 </svg>
         </button>
       </div>
 
-      <div class="url-input" layer-name="URL">
-        <div class="search-menu">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="fxnova-url-input" layer-name="URL">
+        <div class="fxnova-search-menu">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="7" cy="7" r="5.5" stroke="#7B618F" stroke-width="1.2"/>
             <path d="M10.5 10.5L14 14" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
 </svg>
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M10.8619 5.92526C11.1223 5.66491 11.5443 5.66491 11.8046 5.92526C12.065 6.18561 12.065 6.60762 11.8046 6.86797L8.94266 9.72995C8.84492 9.82769 8.72534 9.9495 8.60867 10.0385C8.47656 10.1393 8.27336 10.2586 7.99995 10.2586C7.72654 10.2586 7.52334 10.1393 7.39123 10.0385C7.27455 9.9495 7.15498 9.82769 7.05724 9.72995L4.19526 6.86797C3.93491 6.60762 3.93491 6.18561 4.19526 5.92526C4.45561 5.66491 4.87762 5.66491 5.13797 5.92526L7.52854 8.31584C7.75077 8.53806 7.86188 8.64917 7.99995 8.64917C8.13802 8.64917 8.24913 8.53806 8.47135 8.31584L10.8619 5.92526Z" fill="#7B618F"/>
 </svg>
         </div>
-        <div class="url-text">
-          <div class="url-ghost"><span class="url-domain"></span><span class="url-title"></span><span class="url-rest"></span></div>
-          <input class="url-field" type="text" placeholder="Search or start browsing" />
+        <div class="fxnova-url-text">
+          <div class="fxnova-url-ghost"><span class="fxnova-url-domain"></span><span class="fxnova-url-title"></span><span class="fxnova-url-rest"></span></div>
+          <input class="fxnova-url-field" type="text" placeholder="Search or start browsing" />
         </div>
       </div>
 
-      <div class="address-right">
-        <button class="icon-button small" aria-label="Page actions">
-          <svg class="icon" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <div class="fxnova-address-right">
+        <button class="fxnova-icon-button fxnova-small" aria-label="Page actions">
+          <svg class="fxnova-icon" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.937561 0.00976562C1.14657 0.0275745 1.25119 0.0362502 1.33698 0.121094C1.42282 0.206141 1.43282 0.314006 1.45319 0.529297C1.46138 0.615876 1.46768 0.700857 1.46686 0.769531C1.46622 0.821412 1.46246 0.879514 1.45709 0.938477C1.43783 1.15005 1.42817 1.25647 1.34283 1.3418C1.25751 1.42705 1.15093 1.43675 0.938538 1.45605C0.867059 1.46255 0.796118 1.46678 0.733459 1.4668C0.670707 1.4668 0.599029 1.46256 0.527405 1.45605C0.315468 1.43679 0.209312 1.42667 0.124084 1.3418C0.0387488 1.25647 0.0290848 1.15005 0.00982666 0.938477C0.00445983 0.87949 0.000695905 0.821432 6.10352e-05 0.769531C-0.000765286 0.700855 0.00456457 0.615879 0.0127563 0.529297C0.0331268 0.313993 0.04312 0.206144 0.128967 0.121094C0.214746 0.0361807 0.319421 0.02757 0.528381 0.00976562C0.597234 0.0038991 0.667965 0 0.733459 0C0.798843 1.47715e-05 0.868843 0.00391053 0.937561 0.00976562Z" fill="#7B618F"/>
             <path d="M6.20416 0.00976562C6.41313 0.0275707 6.5178 0.036264 6.60358 0.121094C6.68941 0.206131 6.69942 0.314054 6.71979 0.529297C6.72798 0.615847 6.7333 0.700869 6.73248 0.769531C6.73185 0.821387 6.72905 0.879543 6.72369 0.938477C6.70444 1.15005 6.69477 1.25647 6.60944 1.3418C6.52411 1.42711 6.41754 1.43675 6.20514 1.45605C6.13369 1.46255 6.0627 1.46678 6.00006 1.4668C5.93731 1.4668 5.86563 1.46256 5.79401 1.45605C5.58165 1.43675 5.47502 1.4271 5.38971 1.3418C5.30441 1.25648 5.29568 1.15002 5.27643 0.938477C5.27107 0.879515 5.2673 0.82141 5.26666 0.769531C5.26584 0.700869 5.27117 0.615846 5.27936 0.529297C5.29972 0.31405 5.30973 0.206132 5.39557 0.121094C5.48134 0.0362388 5.58603 0.027569 5.79498 0.00976562C5.86384 0.0038991 5.93457 0 6.00006 0C6.06543 1.73488e-05 6.13547 0.00391253 6.20416 0.00976562Z" fill="#7B618F"/>
             <path d="M11.4698 0.00976562C11.6791 0.0276022 11.7843 0.0360691 11.8702 0.121094C11.956 0.206145 11.966 0.313987 11.9864 0.529297C11.9946 0.615879 11.9999 0.700855 11.9991 0.769531C11.9984 0.82143 11.9947 0.879492 11.9893 0.938477C11.9701 1.15005 11.9604 1.25647 11.8751 1.3418C11.7898 1.4267 11.6837 1.43679 11.4717 1.45605C11.4001 1.46256 11.3284 1.4668 11.2657 1.4668C11.203 1.46678 11.1321 1.46255 11.0606 1.45605C10.8482 1.43675 10.7416 1.42701 10.6563 1.3418C10.571 1.25647 10.5613 1.15005 10.5421 0.938477C10.5367 0.879511 10.5329 0.821414 10.5323 0.769531C10.5315 0.700856 10.5368 0.615876 10.545 0.529297C10.5654 0.31395 10.5763 0.206152 10.6622 0.121094C10.748 0.0362804 10.8525 0.0275764 11.0616 0.00976562C11.1303 0.00390781 11.2003 1.12608e-05 11.2657 0C11.3311 0 11.4011 0.00391691 11.4698 0.00976562Z" fill="#7B618F"/>
 </svg>
         </button>
-        <div class="vpn-pill" aria-label="VPN on">
-          <span class="vpn-dot"></span>
+        <div class="fxnova-vpn-pill" aria-label="VPN on">
+          <span class="fxnova-vpn-dot"></span>
           <span>VPN</span>
         </div>
-        <button class="icon-button" id="toggle-chrome-btn" aria-label="Toggle browser chrome">
-          <svg class="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <button class="fxnova-icon-button" id="toggle-chrome-btn" aria-label="Toggle browser chrome">
+          <svg class="fxnova-icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.97705 0.959961C9.40747 0.960192 10.5669 2.12031 10.5669 3.55078V3.76815C10.5669 3.87215 10.6469 3.95862 10.7504 3.96861C11.7999 4.06987 12.4718 4.26647 13.0425 4.83789C13.8608 5.65778 13.9091 6.66217 14.0044 8.66895C14.0168 8.92927 14.0239 9.18142 14.0239 9.41797L14.019 9.78418C14.0157 9.9092 14.0106 10.0379 14.0044 10.168L13.9692 10.875C13.8851 12.4225 13.7586 13.2807 13.0425 13.998C12.224 14.8178 11.198 14.8681 9.14697 14.9688L8.55322 14.9922C8.35776 14.9975 8.16443 15 7.97705 15C7.60244 15 7.20716 14.9883 6.80811 14.9688C4.88477 14.8743 3.86262 14.8241 3.06787 14.1426L2.9126 13.998C2.25256 13.337 2.08765 12.4228 2.02141 11.5171C1.98804 11.0609 2.3593 10.6777 2.81666 10.6777H4.52881C5.22446 10.6774 5.78834 10.1136 5.78857 9.41797C5.78844 8.72221 5.22453 8.15755 4.52881 8.15723H2.81774C2.35997 8.15723 1.99174 7.77321 2.02819 7.3169C2.11267 6.25921 2.27182 5.57182 2.76709 4.99414L2.9126 4.83789C3.4831 4.26676 4.15399 4.06993 5.20274 3.96863C5.30626 3.95863 5.38623 3.87216 5.38623 3.76816V3.55078C5.38623 2.12029 6.54661 0.960159 7.97705 0.959961ZM7.97705 2.29004C7.32467 2.29022 6.78779 2.78644 6.72314 3.42188C6.71884 3.46426 6.71631 3.50727 6.71631 3.55078V4.72732C6.71631 4.99383 6.50702 5.21314 6.2409 5.22763C5.53588 5.26601 5.0532 5.30502 4.66846 5.38477C4.24648 5.47233 4.03925 5.59184 3.85303 5.77832C3.65963 5.97212 3.54247 6.16842 3.45978 6.59968C3.43688 6.71912 3.53108 6.82715 3.6527 6.82715H4.52881C5.95906 6.82747 7.11852 7.98767 7.11865 9.41797C7.11842 10.8482 5.959 12.0075 4.52881 12.0078H3.6526C3.53101 12.0078 3.43683 12.1158 3.45963 12.2352C3.54223 12.6678 3.65924 12.8645 3.85303 13.0586C4.03919 13.2449 4.24667 13.3636 4.66846 13.4512C5.15869 13.5528 5.80795 13.5883 6.87354 13.6406C7.25624 13.6594 7.62904 13.6699 7.97705 13.6699C8.32523 13.6699 8.69864 13.6594 9.08154 13.6406C10.1473 13.5883 10.7964 13.5529 11.2866 13.4512C11.7084 13.3636 11.9159 13.2451 12.1021 13.0586C12.4832 12.6767 12.5727 12.2851 12.6763 10.1045C12.6879 9.86015 12.6938 9.62919 12.6938 9.41797C12.6938 9.20681 12.6879 8.97571 12.6763 8.73145C12.5728 6.55199 12.4828 6.16005 12.1021 5.77832C11.9159 5.59184 11.7083 5.47234 11.2866 5.38477C10.9015 5.30489 10.4184 5.26599 9.71223 5.22761C9.44611 5.21314 9.23682 4.99383 9.23682 4.72731V3.55078C9.23682 3.50729 9.23526 3.46424 9.23096 3.42188C9.20515 3.16773 9.1037 2.9358 8.94971 2.74902C8.87281 2.65572 8.7825 2.57382 8.68213 2.50586C8.481 2.36974 8.23816 2.29013 7.97705 2.29004Z" fill="#7B618F"/>
 </svg>
         </button>

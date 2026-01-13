@@ -200,6 +200,97 @@
       overlay.style.width = `${urlAreaRect.width}px`; // match URL bar width
     }
 
+    function showExtensionMenu(buttonRect, iframeRect) {
+      const timestamp = '__BUILD_TIME__';
+      // Remove existing menu if any
+      let menu = document.getElementById('nova-extension-menu');
+      if (menu) {
+        menu.remove();
+      }
+      
+      // Create menu
+      menu = document.createElement('div');
+      menu.id = 'nova-extension-menu';
+      menu.style.cssText = `
+        position: fixed;
+        z-index: 2147483647;
+        width: 260px;
+        background: #ffffff;
+        border: 1px solid #e1e3f2;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 6px;
+        font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+      `;
+      
+      // Position below and to the left of the button
+      const left = iframeRect.left + buttonRect.right - 260;
+      const top = iframeRect.top + buttonRect.bottom + 4;
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+      
+      menu.innerHTML = `
+        <button id="nova-menu-toggle" style="
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: 100%;
+          padding: 10px 12px;
+          border: none;
+          background: transparent;
+          border-radius: 8px;
+          font-family: inherit;
+          font-size: 14px;
+          color: #25052c;
+          cursor: pointer;
+          text-align: left;
+        ">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h9A1.5 1.5 0 0 1 14 4.5v1A1.5 1.5 0 0 1 12.5 7h-9A1.5 1.5 0 0 1 2 5.5v-1Z" fill="#7B618F"/>
+            <path d="M2 10.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5v-1Z" fill="#7B618F" opacity="0.4"/>
+          </svg>
+          Toggle real toolbar
+        </button>
+        <div style="height: 1px; background: #e1e3f2; margin: 6px 0;"></div>
+        <div style="padding: 8px 12px; font-size: 11px; color: #5e606d; line-height: 1.4;">
+          This is a simulation of the Search & Suggest features in the Nova redesign style. Questions? Contact Paul Annett on Slack (or email pannett@mozilla.com)
+        </div>
+        <div style="height: 1px; background: #e1e3f2; margin: 6px 0;"></div>
+        <div style="padding: 8px 12px; font-size: 11px; color: #5e606d;">
+          Extension updated:<br>${timestamp}
+        </div>
+      `;
+      
+      document.body.appendChild(menu);
+      
+      // Add hover effect
+      const toggleBtn = menu.querySelector('#nova-menu-toggle');
+      toggleBtn.addEventListener('mouseenter', () => {
+        toggleBtn.style.background = '#f1f0fb';
+      });
+      toggleBtn.addEventListener('mouseleave', () => {
+        toggleBtn.style.background = 'transparent';
+      });
+      
+      // Toggle action
+      toggleBtn.addEventListener('click', () => {
+        menu.remove();
+        const api = typeof browser !== 'undefined' ? browser : chrome;
+        api.runtime.sendMessage({ action: 'toggleChrome' });
+      });
+      
+      // Close on click outside
+      const closeMenu = (e) => {
+        if (!menu.contains(e.target)) {
+          menu.remove();
+          document.removeEventListener('click', closeMenu);
+        }
+      };
+      setTimeout(() => {
+        document.addEventListener('click', closeMenu);
+      }, 0);
+    }
+
     // Update nav state when navigating to a new page (not back/forward)
     function incrementNavState() {
       const navIndex = parseInt(sessionStorage.getItem('nova-nav-index') || '0', 10);
@@ -219,10 +310,9 @@
       // Mark this as a new navigation (not back/forward)
       incrementNavState();
       
-      // Check if it has a scheme
-      const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(trimmed);
+      // Check if it has a scheme (http://, https://, etc.)
+      const hasScheme = /^https?:\/\//i.test(trimmed);
       if (hasScheme) {
-        console.log('[Nova Content] Navigating to', trimmed);
         window.location.href = trimmed;
         return;
       }
@@ -230,20 +320,16 @@
       // Check if it looks like a URL (domain.tld pattern, no spaces)
       const looksLikeUrl = /^[^\s]+\.[a-z]{2,}(\/.*)?$/i.test(trimmed) && !trimmed.includes(' ');
       if (looksLikeUrl) {
-        const target = `https://${trimmed}`;
-        console.log('[Nova Content] Navigating to', target);
-        window.location.href = target;
+        window.location.href = `https://${trimmed}`;
         return;
       }
       
       // Otherwise, Google search
-      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
-      console.log('[Nova Content] Searching Google for', trimmed);
-      window.location.href = searchUrl;
+      window.location.href = `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
     }
 
     function wireOverlayInput(overlay) {
-      const input = overlay.querySelector('.bar-input');
+      const input = overlay.querySelector('.fxnova-bar-input');
       if (!input) return;
       
       // Pre-fill with current URL
@@ -254,29 +340,29 @@
         let highlightIndex = -1; // -1 means input is focused
         
         function getSelectableItems() {
-          return Array.from(overlay.querySelectorAll('.result-row, .card'));
+          return Array.from(overlay.querySelectorAll('.fxnova-result-row, .fxnova-card'));
         }
         
-        const overlayShell = overlay.querySelector('.overlay-shell');
+        const overlayShell = overlay.querySelector('.fxnova-overlay-shell');
         
         function updateHighlight(newIndex, isKeyboardNav = true) {
           const items = getSelectableItems();
           // Remove existing keyboard highlight
-          items.forEach(item => item.classList.remove('keyboard-highlight'));
+          items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
           
           highlightIndex = newIndex;
           
           // Toggle keyboard-nav class to suppress hover styles
           if (overlayShell) {
             if (isKeyboardNav) {
-              overlayShell.classList.add('keyboard-nav');
+              overlayShell.classList.add('fxnova-keyboard-nav');
             } else {
-              overlayShell.classList.remove('keyboard-nav');
+              overlayShell.classList.remove('fxnova-keyboard-nav');
             }
           }
           
           if (isKeyboardNav && highlightIndex >= 0 && highlightIndex < items.length) {
-            items[highlightIndex].classList.add('keyboard-highlight');
+            items[highlightIndex].classList.add('fxnova-keyboard-highlight');
             items[highlightIndex].scrollIntoView({ block: 'nearest' });
           }
         }
@@ -297,8 +383,8 @@
         input.addEventListener('input', () => {
           highlightIndex = -1;
           const items = getSelectableItems();
-          items.forEach(item => item.classList.remove('keyboard-highlight'));
-          if (overlayShell) overlayShell.classList.remove('keyboard-nav');
+          items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
+          if (overlayShell) overlayShell.classList.remove('fxnova-keyboard-nav');
         });
         
         // Handle keyboard navigation
@@ -320,6 +406,7 @@
             }
           } else if (e.key === 'Enter') {
             e.preventDefault();
+            console.log('[Nova Content] Enter pressed, highlightIndex:', highlightIndex, 'value:', input.value);
             if (highlightIndex >= 0 && highlightIndex < items.length) {
               // Trigger click on highlighted item
               items[highlightIndex].click();
@@ -408,6 +495,19 @@
             .catch(err => {
               console.error('[Nova Content] Error sending to background:', err);
             });
+        }
+        if (data.type === 'nova:toggle-extension-menu') {
+          const menu = document.getElementById('nova-extension-menu');
+          if (menu) {
+            menu.remove();
+          } else {
+            const iframeRect = iframe.getBoundingClientRect();
+            showExtensionMenu(data.rect, iframeRect);
+          }
+        }
+        if (data.type === 'nova:close-extension-menu') {
+          const menu = document.getElementById('nova-extension-menu');
+          if (menu) menu.remove();
         }
         if (data.type === 'nova:reload') {
           window.location.reload();
