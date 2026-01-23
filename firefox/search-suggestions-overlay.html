@@ -40,6 +40,12 @@ body {
   gap: 12px;
 }
 
+.fxnova-overlay-shell,
+.fxnova-overlay-shell * {
+  font-family: var(--font-sans) !important;
+  line-height: 1.3;
+}
+
 .fxnova-bar {
   display: flex;
   align-items: center;
@@ -73,6 +79,9 @@ body {
   flex: 1 1 auto;
   min-width: 0;
   height: 100%;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 500 !important;
 }
 
 .fxnova-bar-input {
@@ -93,6 +102,9 @@ body {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 500 !important;
 }
 
 .fxnova-bar-input:focus {
@@ -137,11 +149,32 @@ body {
   border-radius: 24px;
   min-height: 36px;
   width: 100%;
+  position: relative;
+}
+
+.fxnova-result-row.fxnova-top-pick {
+  border-radius: 18px;
+}
+
+.fxnova-result-row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  height: 12px;
+}
+
+.fxnova-list .fxnova-result-row:last-of-type::after {
+  display: none;
 }
 
 .fxnova-result-row.fxnova-keyboard-highlight, .fxnova-card.fxnova-keyboard-highlight { background: var(--bg-active); }
 .fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-result-row:hover,
-.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-card:hover { background: var(--bg-active); }
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-card:hover,
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="1"]:hover) .fxnova-card[data-preview="1"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="2"]:hover) .fxnova-card[data-preview="2"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="3"]:hover) .fxnova-card[data-preview="3"] { background: var(--bg-active); }
 
 .fxnova-result-icon {
   width: 28px;
@@ -151,6 +184,7 @@ body {
   place-items: center;
   background: var(--bg-chip);
   overflow: hidden;
+  margin-left: 4px;
 }
 
 .fxnova-result-icon img { width: 100%; height: 100%; object-fit: cover; }
@@ -171,6 +205,23 @@ body {
 
 .fxnova-result-meta { color: var(--text-tertiary); font-size: 13px; margin: 0; white-space: nowrap; }
 
+.fxnova-meta-dot {
+  display: inline-block;
+  margin: 0 6px;
+}
+
+.fxnova-meta-dot-wide {
+  margin: 0 10px;
+}
+
+.fxnova-google-suggestion .fxnova-result-meta {
+  opacity: 0;
+}
+
+.fxnova-google-suggestion:hover .fxnova-result-meta {
+  opacity: 1;
+}
+
 .fxnova-cards {
   display: flex;
   flex-direction: column;
@@ -182,16 +233,29 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 8px 8px;
   border-radius: 12px;
   width: 100%;
+  position: relative;
 }
 
+.fxnova-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -8px;
+  height: 8px;
+}
+
+.fxnova-cards .fxnova-card:last-child::after {
+  display: none;
+}
 
 .fxnova-card-favicon {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -212,6 +276,8 @@ body {
   font-size: 15px;
   color: var(--text-primary);
   margin: 0;
+  line-height: 1.2;
+  padding-bottom: 1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -232,20 +298,33 @@ body {
 }
 
 .fxnova-left { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
-.fxnova-right {
+.fxnova-suggest-preview {
   width: 252px;
   flex: 0 0 auto;
   background: var(--bg-secondary);
-  border-radius: 18px;
-  padding: 16px;
+  border-radius: 32px 32px 18px 18px;
+  padding: 16px 16px 20px;
   display: none;
   flex-direction: column;
   gap: 12px;
 }
 
-.fxnova-layout:has(.fxnova-card[data-preview="1"]:hover) .fxnova-right[data-for="1"],
-.fxnova-layout:has(.fxnova-card[data-preview="2"]:hover) .fxnova-right[data-for="2"],
-.fxnova-layout:has(.fxnova-card[data-preview="3"]:hover) .fxnova-right[data-for="3"] {
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-card[data-preview="1"]:hover) .fxnova-suggest-preview[data-for="1"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="1"]:hover) .fxnova-suggest-preview[data-for="1"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-card[data-preview="2"]:hover) .fxnova-suggest-preview[data-for="2"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="2"]:hover) .fxnova-suggest-preview[data-for="2"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-card[data-preview="3"]:hover) .fxnova-suggest-preview[data-for="3"],
+.fxnova-overlay-shell:not(.fxnova-keyboard-nav) .fxnova-layout:has(.fxnova-suggest-preview[data-for="3"]:hover) .fxnova-suggest-preview[data-for="3"] {
+  display: flex;
+}
+
+.fxnova-overlay-shell.fxnova-keyboard-nav .fxnova-suggest-preview {
+  display: none;
+}
+
+.fxnova-overlay-shell.fxnova-keyboard-nav[data-keyboard-preview="1"] .fxnova-suggest-preview[data-for="1"],
+.fxnova-overlay-shell.fxnova-keyboard-nav[data-keyboard-preview="2"] .fxnova-suggest-preview[data-for="2"],
+.fxnova-overlay-shell.fxnova-keyboard-nav[data-keyboard-preview="3"] .fxnova-suggest-preview[data-for="3"] {
   display: flex;
 }
 
@@ -258,7 +337,16 @@ body {
 
 .fxnova-hero-title { font-size: 16px; color: var(--text-primary); margin: 0; }
 .fxnova-hero-body { font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.3; }
-.fxnova-hero-link { font-size: 11px; color: var(--text-link); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fxnova-hero-link {
+  font-size: 11px;
+  color: var(--text-link);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
 
 .fxnova-hero-url-line {
   display: flex;
@@ -273,11 +361,11 @@ body {
 
 .fxnova-badge {
   position: absolute;
-  top: 56px;
-  right: 8px;
+  top: 64px;
+  right: 16px;
   width: 32px;
   height: 32px;
-  border-radius: 8px 0 0 10px;
+  border-radius: 18px 32px 18px 18px;
   background: var(--bg-secondary);
   display: grid;
   place-items: center;
@@ -285,7 +373,7 @@ body {
 
 @media (max-width: 900px) {
   .fxnova-layout { flex-direction: column; }
-  .fxnova-right { width: 100%; }
+  .fxnova-suggest-preview { width: 100%; }
 }
 </style>
 </head>
@@ -307,30 +395,14 @@ body {
     <div class="fxnova-layout">
       <div class="fxnova-left">
         <div class="fxnova-list">
-          <p class="fxnova-section-title">Google suggestions</p>
-          <div class="fxnova-result-row">
-            <div class="fxnova-result-icon" style="background: #fff; border: 1px solid #edeff7;">
-              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
-                <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
-</svg>
-            </div>
-            <div class="fxnova-result-content">
-              <p class="fxnova-result-title">coffee shop</p>
-              <p class="fxnova-result-meta">• Search with Google</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="fxnova-list">
-          <div class="fxnova-result-row" style="padding: 0; align-items: stretch;">
-            <div style="display:flex; gap:12px; padding:4px 12px; align-items:center; width:100%;">
+          <div class="fxnova-result-row fxnova-top-pick" style="padding: 0; align-items: stretch;">
+            <div style="display:flex; gap:12px; padding:8px 8px; align-items:center; width:100%;">
               <div style="width:60px;height:60px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#ebe7ff;display:grid;place-items:center;">
                 <img src="assets/d39cb9ac9cda75209c68c64ce2055705731df45d.png" alt="Arabica" style="width:100%;height:100%;object-fit:cover;" />
               </div>
               <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
-                <p class="fxnova-result-title" style="font-weight:600;">Arabica % Broadway Market</p>
-                <p class="fxnova-result-meta" style="font-size:11px; letter-spacing:0.22px;">33 Broadway Market, London E8 4PH • $ • <span style="color:#186d00;font-weight:600;">Open</span> until 5pm today • 4.3 (1.1k)</p>
+                <p class="fxnova-result-title" style="font-weight:600;">Arabica Broadway Market</p>
+                <p class="fxnova-result-meta fxnova-top-pick-meta" style="font-size:11px; letter-spacing:0.22px;">33 Broadway Market, London E8 4PH <span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span>$<span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span><span style="color:#186d00;font-weight:600;">Open</span> until 5pm today <span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span>4.3 (1.1k)</p>
               </div>
             </div>
           </div>
@@ -338,8 +410,8 @@ body {
 
         <div class="fxnova-list">
           <p class="fxnova-section-title">Google suggestions</p>
-          <div class="fxnova-result-row">
-            <div class="fxnova-result-icon" style="width:24px;height:24px;">
+          <div class="fxnova-result-row fxnova-google-suggestion">
+            <div class="fxnova-result-icon" style="width:28px;height:28px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                 <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
                 <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
@@ -347,11 +419,11 @@ body {
             </div>
             <div class="fxnova-result-content">
               <p class="fxnova-result-title" style="font-weight:600;">coffee shop nearby</p>
-              <p class="fxnova-result-meta" style="opacity:0;">• Search with Google</p>
+              <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
             </div>
           </div>
-          <div class="fxnova-result-row">
-            <div class="fxnova-result-icon" style="width:24px;height:24px;">
+          <div class="fxnova-result-row fxnova-google-suggestion">
+            <div class="fxnova-result-icon" style="width:28px;height:28px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                 <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
                 <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
@@ -359,11 +431,11 @@ body {
             </div>
             <div class="fxnova-result-content">
               <p class="fxnova-result-title" style="font-weight:600;">coffee shop near me</p>
-              <p class="fxnova-result-meta" style="opacity:0;">• Search with Google</p>
+              <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
             </div>
           </div>
-          <div class="fxnova-result-row">
-            <div class="fxnova-result-icon" style="width:24px;height:24px;">
+          <div class="fxnova-result-row fxnova-google-suggestion">
+            <div class="fxnova-result-icon" style="width:28px;height:28px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
                 <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
                 <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
@@ -371,7 +443,7 @@ body {
             </div>
             <div class="fxnova-result-content">
               <p class="fxnova-result-title" style="font-weight:600;">coffee shop open now</p>
-              <p class="fxnova-result-meta" style="opacity:0;">• Search with Google</p>
+              <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
             </div>
           </div>
           <div class="fxnova-result-row">
@@ -388,14 +460,14 @@ body {
         </div>
 
         <div class="fxnova-list">
-          <p class="fxnova-section-title">Bookmarks, history, and tabs</p>
+          <p class="fxnova-section-title">Firefox Suggest</p>
           <div class="fxnova-cards">
             <div class="fxnova-card" data-preview="1">
               <div class="fxnova-card-favicon">
                 <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="Origin Coffee" />
               </div>
               <div class="fxnova-card-text">
-                <p class="fxnova-card-title">Origin Coffee: Speciality Coffee Online - Next Day Coff</p>
+                <p class="fxnova-card-title">Origin Coffee: Speciality Coffee Online - Next Day Coffee</p>
               </div>
             </div>
             <div class="fxnova-card" data-preview="2">
@@ -419,7 +491,7 @@ body {
       </div>
 
       <!-- Preview 1: Origin Coffee -->
-      <div class="fxnova-right" data-for="1" aria-label="Preview card">
+      <div class="fxnova-suggest-preview" data-for="1" aria-label="Suggest preview">
         <div class="fxnova-badge">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
@@ -439,7 +511,7 @@ body {
       </div>
 
       <!-- Preview 2: Coffee Pros Article -->
-      <div class="fxnova-right" data-for="2" aria-label="Preview card">
+      <div class="fxnova-suggest-preview" data-for="2" aria-label="Suggest preview">
         <div class="fxnova-badge">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>
@@ -459,7 +531,7 @@ body {
       </div>
 
       <!-- Preview 3: RAVE Coffee -->
-      <div class="fxnova-right" data-for="3" aria-label="Preview card">
+      <div class="fxnova-suggest-preview" data-for="3" aria-label="Suggest preview">
         <div class="fxnova-badge">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 3.5 14.6 9l5.9.5-4.5 3.9 1.4 5.8L12 16.9l-5.4 2.3L8 13.4 3.5 9.5 9.4 9z" fill="#7B618F"/>

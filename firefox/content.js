@@ -358,12 +358,26 @@
               overlayShell.classList.add('fxnova-keyboard-nav');
             } else {
               overlayShell.classList.remove('fxnova-keyboard-nav');
+              overlayShell.removeAttribute('data-keyboard-preview');
             }
           }
           
+          let previewId = null;
           if (isKeyboardNav && highlightIndex >= 0 && highlightIndex < items.length) {
-            items[highlightIndex].classList.add('fxnova-keyboard-highlight');
-            items[highlightIndex].scrollIntoView({ block: 'nearest' });
+            const item = items[highlightIndex];
+            item.classList.add('fxnova-keyboard-highlight');
+            item.scrollIntoView({ block: 'nearest' });
+            if (item.classList.contains('fxnova-card')) {
+              previewId = item.getAttribute('data-preview');
+            }
+          }
+          
+          if (overlayShell && isKeyboardNav) {
+            if (previewId) {
+              overlayShell.setAttribute('data-keyboard-preview', previewId);
+            } else {
+              overlayShell.removeAttribute('data-keyboard-preview');
+            }
           }
         }
         
@@ -384,7 +398,10 @@
           highlightIndex = -1;
           const items = getSelectableItems();
           items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
-          if (overlayShell) overlayShell.classList.remove('fxnova-keyboard-nav');
+          if (overlayShell) {
+            overlayShell.classList.remove('fxnova-keyboard-nav');
+            overlayShell.removeAttribute('data-keyboard-preview');
+          }
         });
         
         // Handle keyboard navigation
