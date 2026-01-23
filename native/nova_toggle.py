@@ -28,9 +28,8 @@ def send_message(message):
     sys.stdout.buffer.flush()
 
 def find_firefox_profile():
-    """Find the currently active Firefox profile by checking session files."""
+    """Find the Firefox Developer Edition profile."""
     
-    # Check which profile has the most recently modified session file
     profiles_dir = Path.home() / "Library" / "Application Support" / "Firefox" / "Profiles"
     
     if not profiles_dir.exists():
@@ -38,10 +37,20 @@ def find_firefox_profile():
     
     try:
         profiles = [p for p in profiles_dir.iterdir() if p.is_dir()]
+        
+        # Priority 1: Look for dev-edition-default profile
+        for p in profiles:
+            if 'dev-edition-default' in p.name:
+                return p
+        
+        # Priority 2: Look for any dev-edition profile
+        for p in profiles:
+            if 'dev-edition' in p.name:
+                return p
+        
+        # Priority 3: Fall back to most recent session file
         if profiles:
-            # Find profile with most recent sessionstore activity
             def get_session_mtime(p):
-                # recovery.jsonlz4 is updated most frequently in active profile
                 for session_file in ['sessionstore-backups/recovery.jsonlz4', 'sessionstore.jsonlz4']:
                     sf = p / session_file
                     if sf.exists():
