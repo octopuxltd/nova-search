@@ -21,20 +21,6 @@ browserAPI.runtime.onInstalled.addListener((details) => {
 browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
   console.log('[Nova Background] Received message:', request);
   
-  if (request.action === 'toggleChrome') {
-    console.log('[Nova Background] Toggle chrome requested, calling native messaging');
-    // Send message to native app to toggle userChrome.css
-    browserAPI.runtime.sendNativeMessage('nova_toggle', { action: 'toggle' })
-      .then(response => {
-        console.log('[Nova Background] Native response:', response);
-        sendResponse({ success: true, response });
-      })
-      .catch(error => {
-        console.error('[Nova Background] Native messaging error:', error);
-        sendResponse({ success: false, error: error.message });
-      });
-    return true; // Keep channel open for async response
-  }
   if (request.action === 'getPixelColor') {
     chrome.tabs.captureVisibleTab(null, { format: 'png' }).then(dataUrl => {
       // Create image element

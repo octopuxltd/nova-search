@@ -11,8 +11,7 @@
   },
   "permissions": [
     "activeTab",
-    "tabs",
-    "nativeMessaging"
+    "tabs"
   ],
   "host_permissions": [
     "<all_urls>"

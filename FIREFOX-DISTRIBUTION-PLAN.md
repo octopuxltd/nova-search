@@ -1,90 +1,59 @@
 # Firefox distribution plan
 
 ## Goal
-Create a self-installing package that allows users to easily install and use the Nova browser simulation extension on Firefox Developer Edition, with the ability to toggle between the simulated UI and real Firefox chrome.
+Ship a Firefox add-on that simulates the Nova UI without modifying the user's profile or using native messaging. The real browser chrome is hidden via fullscreen + about:config preferences.
 
 ## Components needed
 
 ### 1. Firefox extension
-- Port the existing Chrome extension to Firefox
-- Add a toggle button in the simulated browser UI
-- Implement native messaging to communicate with the toggle script
+- Inject the simulated Nova toolbar and suggestions UI
+- No native messaging and no profile modifications
 
-### 2. Native messaging host
-A shell script that:
-- Auto-detects the active Firefox Developer Edition profile by parsing `profiles.ini`
-- Toggles `userChrome.css` (renames to/from `.disabled`)
-- Restarts Firefox Developer Edition
+### 2. Firefox preferences (one-time)
+These are set by the user in `about:config`:
+- `full-screen-api.ignore-widgets` = `true`
+- `browser.fullscreen.autohide` = `true`
 
-**Location:** `~/Library/Application Support/Mozilla/NativeMessagingHosts/`
-
-**Manifest file:** `nova_toggle.json` pointing to the toggle script
-
-### 3. userChrome.css
-Hides Firefox's native browser chrome:
-```css
-#TabsToolbar, #nav-bar, #PersonalToolbar, #sidebar-header { 
-  display: none !important; 
-}
-```
-
-### 4. Installer script (`install.sh`)
-One-time setup that:
-1. Detects Firefox Developer Edition installation
-2. Finds or creates the default profile
-3. Creates `chrome/userChrome.css` in the profile
-4. Enables `toolkit.legacyUserProfileCustomizations.stylesheets` in `user.js`
-5. Registers the native messaging host
-6. Installs the extension (or provides instructions)
+With these enabled, fullscreen hides the native chrome without resizing the window, making it easy to toggle the real chrome on/off with the normal fullscreen shortcut.
 
 ## User experience
 
 ### Installation
-```bash
-./install.sh
-```
+1. Install the extension (temporary add-on for development or signed XPI for distribution).
+2. Set the two fullscreen preferences in `about:config`.
 
 ### Usage
-1. Open Firefox Developer Edition
-2. Browse to any website
-3. Simulated browser chrome appears at top
-4. Click toggle button → Firefox restarts with real chrome visible
-5. Click toggle button again → Firefox restarts with simulated chrome
+1. Open any website.
+2. Simulated browser chrome appears at the top.
+3. Use the standard fullscreen shortcut to hide/show real Firefox chrome.
+
+## Building the XPI
+Run this from the `firefox/` folder to package the extension:
+
+```bash
+TIMESTAMP=$(date "+%H:%M  •  %d %b %Y") && \
+sed -i '' "s/__BUILD_TIME__/$TIMESTAMP/" content.js && \
+rm -f ../nova-extension.xpi && \
+zip -r ../nova-extension.xpi * -x "*.DS_Store" && \
+sed -i '' "s/$TIMESTAMP/__BUILD_TIME__/" content.js
+```
+
+This produces `nova-extension.xpi` in the repo root. Install it by opening the XPI in Firefox.
 
 ## File structure
 ```
 nova/
 ├── firefox/
 │   ├── manifest.json          # Firefox extension manifest
-│   ├── content.js             # Same as Chrome version
-│   ├── background.js          # With native messaging
+│   ├── content.js
+│   ├── background.js
 │   ├── figma-design.html
 │   ├── figma-design.js
 │   ├── search-suggestions-overlay.html
 │   └── assets/
-├── native/
-│   ├── nova_toggle.sh         # Toggle script
-│   └── nova_toggle.json       # Native messaging manifest
-├── install/
-│   ├── install.sh             # Main installer
-│   └── userChrome.css         # Template CSS
 └── FIREFOX-DISTRIBUTION-PLAN.md
 ```
 
-## Technical notes
-
-### Profile detection
-Parse `~/Library/Application Support/Firefox Developer Edition/profiles.ini` to find:
-- `[Profile*]` sections
-- `Default=1` indicates the default profile
-- `Path=` gives the profile folder (relative or absolute)
-
-### Native messaging
-- Firefox requires the native messaging manifest in a specific location
-- The manifest must reference the script with an absolute path
-- The script must be executable
-
-### Considerations
-- Firefox restart causes brief interruption (~1-2 seconds)
-- User's tabs are preserved (Firefox session restore)
-- Works across all Firefox Developer Edition profiles on the same Mac
+## Considerations
+- Fullscreen can change page state and may affect layout for some sites.
+- Users can always exit fullscreen to restore the native chrome.

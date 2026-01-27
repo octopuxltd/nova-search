@@ -47,6 +47,36 @@
   console.log('[Nova Content] Content script loaded');
   console.log('[Nova Content] Document ready state:', document.readyState);
 
+  let suggestionDataPromise = null;
+
+  function loadSuggestionData() {
+    if (suggestionDataPromise) return suggestionDataPromise;
+    const dataUrl = chrome.runtime.getURL('assets/suggestion-words.json');
+    suggestionDataPromise = fetch(dataUrl)
+      .then(res => {
+        if (!res.ok) throw new Error(`Suggestion data fetch failed: ${res.status}`);
+        return res.json();
+      })
+      .catch(err => {
+        console.error('[Nova Content] Failed to load suggestion data', err);
+        return {};
+      });
+    return suggestionDataPromise;
+  }
+
+  function extractLetters(value) {
+    return (value || '').toLowerCase().replace(/[^a-z]/g, '');
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // Function to inject the blurred header with gradient blur
   function injectHeader() {
     console.log('[Nova Content] injectHeader called');
@@ -185,6 +215,10 @@
         const assetsBase = chrome.runtime.getURL('assets/');
         html = html.replace(/src="assets\//g, `src="${assetsBase}`);
         overlay.innerHTML = html;
+        const suggestionsList = overlay.querySelector('[data-nova-suggestions="true"]');
+        if (suggestionsList && !suggestionsList.dataset.defaultHtml) {
+          suggestionsList.dataset.defaultHtml = suggestionsList.innerHTML;
+        }
         overlay.dataset.loaded = 'true';
       } catch (err) {
         console.error('[Nova Content] Failed to load overlay HTML', err);
@@ -201,7 +235,7 @@
     }
 
     function showExtensionMenu(buttonRect, iframeRect) {
-      const timestamp = '__BUILD_TIME__';
+      const timestamp = new Date().toLocaleString();
       // Remove existing menu if any
       let menu = document.getElementById('nova-extension-menu');
       if (menu) {
@@ -214,7 +248,7 @@
       menu.style.cssText = `
         position: fixed;
         z-index: 2147483647;
-        width: 260px;
+        width: 310px;
         background: #ffffff;
         border: 1px solid #e1e3f2;
         border-radius: 12px;
@@ -224,33 +258,26 @@
       `;
       
       // Position below and to the left of the button
-      const left = iframeRect.left + buttonRect.right - 260;
+      const left = iframeRect.left + buttonRect.right - 310;
       const top = iframeRect.top + buttonRect.bottom + 4;
       menu.style.left = `${left}px`;
       menu.style.top = `${top}px`;
       
+      const isMac = typeof navigator !== 'undefined' && /Mac/i.test(navigator.platform || navigator.userAgent);
+      const fullscreenShortcut = isMac ? 'CMD+CTRL+F' : 'F11';
+
       menu.innerHTML = `
-        <button id="nova-menu-toggle" style="
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          width: 100%;
-          padding: 10px 12px;
-          border: none;
-          background: transparent;
-          border-radius: 8px;
-          font-family: inherit;
-          font-size: 14px;
-          color: #25052c;
-          cursor: pointer;
-          text-align: left;
-        ">
-          <svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 4.5A1.5 1.5 0 0 1 3.5 3h9A1.5 1.5 0 0 1 14 4.5v1A1.5 1.5 0 0 1 12.5 7h-9A1.5 1.5 0 0 1 2 5.5v-1Z" fill="#7B618F"/>
-            <path d="M2 10.5A1.5 1.5 0 0 1 3.5 9h9a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 11.5v-1Z" fill="#7B618F" opacity="0.4"/>
-          </svg>
-          Toggle real toolbar
-        </button>
+        <div style="padding: 8px 12px; font-size: 11px; color: #5e606d; line-height: 1.4;">
+          <div style="font-weight: 600; color: #25052c; margin-bottom: 6px;">
+            Nova prototype mode (i.e. hide Firefox's classic UI)
+          </div>
+          <div style="display: grid; gap: 4px;">
+            <div>1. Go to <code style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">about:config</code></div>
+            <div>2. Set <code style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">full-screen-api.ignore-widgets</code> to true</div>
+            <div>3. Set <code style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">browser.fullscreen.autohide</code> to true</div>
+            <div>4. Press <code style="font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">${fullscreenShortcut}</code> to show/hide the classic UI</div>
+          </div>
+        </div>
         <div style="height: 1px; background: #e1e3f2; margin: 6px 0;"></div>
         <div style="padding: 8px 12px; font-size: 11px; color: #5e606d; line-height: 1.4;">
           This is a simulation of the Search & Suggest features in the Nova redesign style. Questions? Contact Paul Annett on Slack (or email pannett@mozilla.com)
@@ -262,22 +289,6 @@
       `;
       
       document.body.appendChild(menu);
-      
-      // Add hover effect
-      const toggleBtn = menu.querySelector('#nova-menu-toggle');
-      toggleBtn.addEventListener('mouseenter', () => {
-        toggleBtn.style.background = '#f1f0fb';
-      });
-      toggleBtn.addEventListener('mouseleave', () => {
-        toggleBtn.style.background = 'transparent';
-      });
-      
-      // Toggle action
-      toggleBtn.addEventListener('click', () => {
-        menu.remove();
-        const api = typeof browser !== 'undefined' ? browser : chrome;
-        api.runtime.sendMessage({ action: 'toggleChrome' });
-      });
       
       // Close on click outside
       const closeMenu = (e) => {
@@ -330,11 +341,13 @@
 
     function wireOverlayInput(overlay) {
       const input = overlay.querySelector('.fxnova-bar-input');
+      const suggestionsList = overlay.querySelector('[data-nova-suggestions="true"]');
+      const defaultSuggestionsHtml = suggestionsList?.dataset.defaultHtml || '';
       if (!input) return;
       
       // Pre-fill with current URL
       if (!input.dataset.wired) {
-        input.value = window.location.href;
+        input.value = window.location.href.replace(/^https?:\/\//i, '');
         input.dataset.wired = 'true';
         
         let highlightIndex = -1; // -1 means input is focused
@@ -392,6 +405,91 @@
           });
         }
         wireMouseListeners();
+
+        function getSuggestionsForInput(lettersOnly, data) {
+          if (!lettersOnly) return [];
+          if (lettersOnly.length === 1) {
+            const prefixes = Object.keys(data)
+              .filter(key => key.startsWith(lettersOnly))
+              .sort();
+            return prefixes.map(prefix => data[prefix]?.[0]).filter(Boolean);
+          }
+          const prefix = lettersOnly.slice(0, 2);
+          const list = Array.isArray(data[prefix]) ? data[prefix] : [];
+          if (lettersOnly.length <= 2) return list.slice();
+          const filtered = list.filter(item => item.startsWith(lettersOnly));
+          return filtered.length ? filtered : list;
+        }
+
+        function formatSuggestionLabel(item, lettersOnly) {
+          if (!lettersOnly) return escapeHtml(item);
+          const normalizedItem = item.toLowerCase();
+          const normalizedLetters = lettersOnly.toLowerCase();
+          if (!normalizedItem.startsWith(normalizedLetters)) {
+            return escapeHtml(item);
+          }
+          const safeLength = Math.min(lettersOnly.length, item.length);
+          const matched = item.slice(0, safeLength);
+          const remainder = item.slice(safeLength);
+          return `<span class="fxnova-typed-chars">${escapeHtml(matched)}</span>${escapeHtml(remainder)}`;
+        }
+
+        function renderSuggestions(items, lettersOnly) {
+          if (!suggestionsList) return;
+          if (!items.length) {
+            suggestionsList.innerHTML = `
+              <p class="fxnova-section-title">Suggestions</p>
+              <div class="fxnova-result-row fxnova-google-suggestion">
+                <div class="fxnova-result-icon" style="width:28px;height:28px;">
+                  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                    <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                    <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="fxnova-result-content">
+                  <p class="fxnova-result-title" style="font-weight:600;">No suggestions found</p>
+                  <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
+                </div>
+              </div>
+            `;
+            wireMouseListeners();
+            return;
+          }
+
+          const rows = items.map(item => `
+            <div class="fxnova-result-row fxnova-google-suggestion">
+              <div class="fxnova-result-icon" style="width:28px;height:28px;">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                  <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+                  <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="fxnova-result-content">
+                <p class="fxnova-result-title" style="font-weight:400;">${formatSuggestionLabel(item, lettersOnly)}</p>
+                <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
+              </div>
+            </div>
+          `).join('');
+
+          suggestionsList.innerHTML = `
+            <p class="fxnova-section-title">Suggestions</p>
+            ${rows}
+          `;
+          wireMouseListeners();
+        }
+
+        async function updateSuggestions(value) {
+          if (!suggestionsList) return;
+          const lettersOnly = extractLetters(value);
+          if (!lettersOnly) {
+            suggestionsList.innerHTML = defaultSuggestionsHtml;
+            wireMouseListeners();
+            return;
+          }
+          const data = await loadSuggestionData();
+          const suggestions = getSuggestionsForInput(lettersOnly, data);
+          renderSuggestions(suggestions, lettersOnly);
+        }
         
         // Reset highlight when user types (not arrow keys)
         input.addEventListener('input', () => {
@@ -402,6 +500,7 @@
             overlayShell.classList.remove('fxnova-keyboard-nav');
             overlayShell.removeAttribute('data-keyboard-preview');
           }
+          updateSuggestions(input.value);
         });
         
         // Handle keyboard navigation
@@ -476,11 +575,15 @@
         observer.observe(overlay, { attributes: true, attributeFilter: ['style'] });
       }
       
-      // Focus and select all text
+      // Focus, select all, but keep scroll at start
       setTimeout(() => {
         input.focus();
         input.select();
+        requestAnimationFrame(() => {
+          input.scrollLeft = 0;
+        });
       }, 0);
+      updateSuggestions(input.value);
     }
 
     // Show/hide overlay driven by messages from iframe
@@ -500,18 +603,6 @@
             // Wire up and focus the overlay input
             wireOverlayInput(overlay);
           }
-        }
-        if (data.type === 'nova:toggle-chrome') {
-          console.log('[Nova Content] Toggle chrome requested, sending to background');
-          // Send message to background script to trigger native messaging
-          const api = typeof browser !== 'undefined' ? browser : chrome;
-          api.runtime.sendMessage({ action: 'toggleChrome' })
-            .then(response => {
-              console.log('[Nova Content] Background response:', response);
-            })
-            .catch(err => {
-              console.error('[Nova Content] Error sending to background:', err);
-            });
         }
         if (data.type === 'nova:toggle-extension-menu') {
           const menu = document.getElementById('nova-extension-menu');

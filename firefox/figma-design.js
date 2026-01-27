@@ -123,14 +123,14 @@
       }
     });
 
-    // App menu - toggle in parent page
-    const appMenuBtn = document.getElementById('app-menu-btn');
-    console.log('[Nova Iframe] App menu button found:', !!appMenuBtn);
+    // Nova prototype badge - toggle in parent page
+    const prototypeBtn = document.getElementById('nova-prototype-btn');
+    console.log('[Nova Iframe] Prototype button found:', !!prototypeBtn);
     
-    if (appMenuBtn) {
-      appMenuBtn.addEventListener('click', (e) => {
+    if (prototypeBtn) {
+      prototypeBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const rect = appMenuBtn.getBoundingClientRect();
+        const rect = prototypeBtn.getBoundingClientRect();
         parentWin.postMessage({ 
           type: 'nova:toggle-extension-menu', 
           rect
@@ -143,10 +143,6 @@
       parentWin.postMessage({ type: 'nova:close-extension-menu' }, '*');
     });
     
-    // Puzzle piece button - no longer used for menu
-    const toggleBtn = document.getElementById('toggle-chrome-btn');
-    console.log('[Nova Iframe] Toggle button found:', !!toggleBtn);
-
     // Reload button
     const reloadBtn = document.getElementById('reload-btn');
     if (reloadBtn) {

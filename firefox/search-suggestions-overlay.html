@@ -137,7 +137,7 @@ body {
 .fxnova-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
   width: 100%;
 }
 
@@ -145,9 +145,9 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 4px;
+  padding: 4px 2px;
   border-radius: 24px;
-  min-height: 36px;
+  min-height: 24px;
   width: 100%;
   position: relative;
 }
@@ -161,8 +161,8 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -12px;
-  height: 12px;
+  bottom: -4px;
+  height: 4px;
 }
 
 .fxnova-list .fxnova-result-row:last-of-type::after {
@@ -203,6 +203,10 @@ body {
   white-space: nowrap;
 }
 
+.fxnova-typed-chars {
+  font-weight: 600;
+}
+
 .fxnova-result-meta { color: var(--text-tertiary); font-size: 13px; margin: 0; white-space: nowrap; }
 
 .fxnova-meta-dot {
@@ -222,6 +226,10 @@ body {
   opacity: 1;
 }
 
+.fxnova-google-suggestion.fxnova-keyboard-highlight .fxnova-result-meta {
+  opacity: 1;
+}
+
 .fxnova-cards {
   display: flex;
   flex-direction: column;
@@ -233,7 +241,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 8px;
+  padding: 4px 2px;
   border-radius: 12px;
   width: 100%;
   position: relative;
@@ -244,8 +252,8 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -8px;
-  height: 8px;
+  bottom: -4px;
+  height: 4px;
 }
 
 .fxnova-cards .fxnova-card:last-child::after {
@@ -359,6 +367,35 @@ body {
   margin-top: auto;
 }
 
+.fxnova-hero-favicon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+
+.fxnova-hero-favicon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.fxnova-hero-favicon.fxnova-hero-favicon--dark {
+  background: #1a1a2e;
+}
+
+.fxnova-hero-favicon-letter {
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .fxnova-badge {
   position: absolute;
   top: 64px;
@@ -401,15 +438,15 @@ body {
                 <img src="assets/d39cb9ac9cda75209c68c64ce2055705731df45d.png" alt="Arabica" style="width:100%;height:100%;object-fit:cover;" />
               </div>
               <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
-                <p class="fxnova-result-title" style="font-weight:600;">Arabica Broadway Market</p>
+                <p class="fxnova-result-title" style="font-weight:600;">Arabica Broadway Markets</p>
                 <p class="fxnova-result-meta fxnova-top-pick-meta" style="font-size:11px; letter-spacing:0.22px;">33 Broadway Market, London E8 4PH <span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span>$<span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span><span style="color:#186d00;font-weight:600;">Open</span> until 5pm today <span class="fxnova-meta-dot fxnova-meta-dot-wide">·</span>4.3 (1.1k)</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="fxnova-list">
-          <p class="fxnova-section-title">Google suggestions</p>
+        <div class="fxnova-list" data-nova-suggestions="true">
+          <p class="fxnova-section-title">Suggestions</p>
           <div class="fxnova-result-row fxnova-google-suggestion">
             <div class="fxnova-result-icon" style="width:28px;height:28px;">
               <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
@@ -502,8 +539,8 @@ body {
           <p class="fxnova-hero-title">Origin Coffee: Speciality Coffee Online</p>
           <p class="fxnova-hero-body">Award-winning speciality coffee roasters. Fresh roasted coffee delivered next day. Single origin, blends, and subscriptions available.</p>
           <div class="fxnova-hero-url-line">
-            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
-              <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            <div class="fxnova-hero-favicon">
+              <img src="assets/d329da77c5c4a3fe75e365b1f9db4f21ec0b89f7.png" alt="domain" />
             </div>
             <p class="fxnova-hero-link">origincoffee.co.uk</p>
           </div>
@@ -522,8 +559,8 @@ body {
           <p class="fxnova-hero-title">I Asked 10 Coffee Pros: What's the Best Way to Brew Coffee At Home?</p>
           <p class="fxnova-hero-body">To make the best coffee at home, start with fresh, quality beans and filter water, grinding beans just before brewing with a consistent size.</p>
           <div class="fxnova-hero-url-line">
-            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden;">
-              <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="domain" style="width:100%; height:100%; object-fit: cover;" />
+            <div class="fxnova-hero-favicon">
+              <img src="assets/336f4803f002554fbe042f93b5ed8fb4355d67c6.png" alt="domain" />
             </div>
             <p class="fxnova-hero-link">foodandwine.com/kitchen/i-asked-10-coffee-pros...</p>
           </div>
@@ -542,8 +579,8 @@ body {
           <p class="fxnova-hero-title">RAVE Coffee: Speciality Coffee Roasters</p>
           <p class="fxnova-hero-body">Independent UK coffee roasters since 2014. Freshly roasted speciality coffee beans, equipment, and brewing guides. Free delivery on orders over £25.</p>
           <div class="fxnova-hero-url-line">
-            <div style="width:16px; height:16px; border-radius:50%; overflow:hidden; background:#1a1a2e; display:grid; place-items:center;">
-              <span style="color:white; font-size:10px; font-weight:bold;">R</span>
+            <div class="fxnova-hero-favicon fxnova-hero-favicon--dark">
+              <span class="fxnova-hero-favicon-letter">R</span>
             </div>
             <p class="fxnova-hero-link">ravecoffee.co.uk</p>
           </div>
