@@ -77,6 +77,159 @@
       .replace(/'/g, '&#39;');
   }
 
+  const HISTORY_STORAGE_KEY = 'nova-search-history-v1';
+  const HISTORY_LIMIT = 500;
+  const MAX_SUGGESTIONS = 10;
+  let historyDataPromise = null;
+  let historyCache = null;
+
+  function getStorageAPI() {
+    return (typeof browser !== 'undefined' ? browser : chrome).storage?.local;
+  }
+
+  function storageGet(key) {
+    const storage = getStorageAPI();
+    if (!storage) return Promise.resolve({});
+    try {
+      const result = storage.get(key);
+      if (result && typeof result.then === 'function') return result;
+    } catch (err) {
+      console.warn('[Nova Content] Storage get failed', err);
+    }
+    return new Promise((resolve) => {
+      storage.get(key, (items) => {
+        if (chrome.runtime?.lastError) {
+          console.warn('[Nova Content] Storage get error', chrome.runtime.lastError);
+          resolve({});
+          return;
+        }
+        resolve(items || {});
+      });
+    });
+  }
+
+  function storageSet(payload) {
+    const storage = getStorageAPI();
+    if (!storage) return Promise.resolve();
+    try {
+      const result = storage.set(payload);
+      if (result && typeof result.then === 'function') return result;
+    } catch (err) {
+      console.warn('[Nova Content] Storage set failed', err);
+    }
+    return new Promise((resolve) => {
+      storage.set(payload, () => {
+        if (chrome.runtime?.lastError) {
+          console.warn('[Nova Content] Storage set error', chrome.runtime.lastError);
+        }
+        resolve();
+      });
+    });
+  }
+
+  function createEmptyHistory() {
+    return { version: 1, items: {} };
+  }
+
+  function normalizeHistory(raw) {
+    if (!raw || typeof raw !== 'object') return createEmptyHistory();
+    if (raw.version !== 1 || !raw.items || typeof raw.items !== 'object') {
+      return createEmptyHistory();
+    }
+    return raw;
+  }
+
+  function pruneHistory(history) {
+    const entries = Object.values(history.items || {});
+    if (entries.length <= HISTORY_LIMIT) return history;
+    entries.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
+    const trimmed = entries.slice(0, HISTORY_LIMIT);
+    const items = {};
+    trimmed.forEach((entry) => {
+      if (!entry) return;
+      const fallbackKey = entry.term ? entry.term.toLowerCase() : null;
+      const key = entry.key || fallbackKey;
+      if (!key) return;
+      items[key] = { ...entry, key };
+    });
+    return { ...history, items };
+  }
+
+  function loadSearchHistory() {
+    if (historyDataPromise) return historyDataPromise;
+    historyDataPromise = storageGet(HISTORY_STORAGE_KEY)
+      .then((data) => {
+        const history = normalizeHistory(data[HISTORY_STORAGE_KEY]);
+        historyCache = history;
+        return history;
+      })
+      .catch((err) => {
+        console.warn('[Nova Content] Failed to load search history', err);
+        historyCache = createEmptyHistory();
+        return historyCache;
+      });
+    return historyDataPromise;
+  }
+
+  function updateHistoryCache(history) {
+    historyCache = history;
+    historyDataPromise = Promise.resolve(history);
+  }
+
+  async function saveSearchHistory(history) {
+    await storageSet({ [HISTORY_STORAGE_KEY]: history });
+  }
+
+  async function recordSearchTerm(value) {
+    const trimmed = (value || '').replace(/\s+/g, ' ').trim();
+    if (!trimmed) return;
+    const normalized = extractLetters(trimmed);
+    if (!normalized) return;
+    const history = historyCache || await loadSearchHistory();
+    const key = trimmed.toLowerCase();
+    const now = Date.now();
+    const existing = history.items[key];
+    const nextEntry = {
+      key,
+      term: trimmed,
+      normalized,
+      count: existing ? (existing.count || 0) + 1 : 1,
+      lastUsed: now
+    };
+    history.items[key] = nextEntry;
+    const pruned = pruneHistory(history);
+    await saveSearchHistory(pruned);
+    updateHistoryCache(pruned);
+  }
+
+  function getHistoryMatches(lettersOnly, history) {
+    if (!lettersOnly) return [];
+    const entries = Object.values(history.items || {});
+    const filtered = entries.filter(entry => {
+      const normalized = entry?.normalized || extractLetters(entry?.term || '');
+      return normalized.startsWith(lettersOnly);
+    });
+    filtered.sort((a, b) => (b.lastUsed || 0) - (a.lastUsed || 0));
+    return filtered;
+  }
+
+  function getSuggestionIcon(type) {
+    if (type === 'history') {
+      return `
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+          <circle cx="8" cy="8" r="6" stroke="#7B618F" stroke-width="1.2"/>
+          <path d="M8 4.5V8.3L10.3 9.7" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      `;
+    }
+    return `
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+        <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
+        <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
   // Function to inject the blurred header with gradient blur
   function injectHeader() {
     console.log('[Nova Content] injectHeader called');
@@ -336,6 +489,7 @@
       }
       
       // Otherwise, Google search
+      recordSearchTerm(trimmed);
       window.location.href = `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
     }
 
@@ -345,151 +499,171 @@
       const defaultSuggestionsHtml = suggestionsList?.dataset.defaultHtml || '';
       if (!input) return;
       
-      // Pre-fill with current URL
-      if (!input.dataset.wired) {
-        input.value = window.location.href.replace(/^https?:\/\//i, '');
-        input.dataset.wired = 'true';
+      let highlightIndex = -1; // -1 means input is focused
+      const overlayShell = overlay.querySelector('.fxnova-overlay-shell');
+
+      function getSelectableItems() {
+        return Array.from(overlay.querySelectorAll('.fxnova-result-row, .fxnova-card'));
+      }
+
+      function updateHighlight(newIndex, isKeyboardNav = true) {
+        const items = getSelectableItems();
+        // Remove existing keyboard highlight
+        items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
         
-        let highlightIndex = -1; // -1 means input is focused
+        highlightIndex = newIndex;
         
-        function getSelectableItems() {
-          return Array.from(overlay.querySelectorAll('.fxnova-result-row, .fxnova-card'));
-        }
-        
-        const overlayShell = overlay.querySelector('.fxnova-overlay-shell');
-        
-        function updateHighlight(newIndex, isKeyboardNav = true) {
-          const items = getSelectableItems();
-          // Remove existing keyboard highlight
-          items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
-          
-          highlightIndex = newIndex;
-          
-          // Toggle keyboard-nav class to suppress hover styles
-          if (overlayShell) {
-            if (isKeyboardNav) {
-              overlayShell.classList.add('fxnova-keyboard-nav');
-            } else {
-              overlayShell.classList.remove('fxnova-keyboard-nav');
-              overlayShell.removeAttribute('data-keyboard-preview');
-            }
-          }
-          
-          let previewId = null;
-          if (isKeyboardNav && highlightIndex >= 0 && highlightIndex < items.length) {
-            const item = items[highlightIndex];
-            item.classList.add('fxnova-keyboard-highlight');
-            item.scrollIntoView({ block: 'nearest' });
-            if (item.classList.contains('fxnova-card')) {
-              previewId = item.getAttribute('data-preview');
-            }
-          }
-          
-          if (overlayShell && isKeyboardNav) {
-            if (previewId) {
-              overlayShell.setAttribute('data-keyboard-preview', previewId);
-            } else {
-              overlayShell.removeAttribute('data-keyboard-preview');
-            }
+        // Toggle keyboard-nav class to suppress hover styles
+        if (overlayShell) {
+          if (isKeyboardNav) {
+            overlayShell.classList.add('fxnova-keyboard-nav');
+          } else {
+            overlayShell.classList.remove('fxnova-keyboard-nav');
+            overlayShell.removeAttribute('data-keyboard-preview');
           }
         }
         
-        // Add mouse listeners to sync highlight index with hover
-        function wireMouseListeners() {
-          const items = getSelectableItems();
-          items.forEach((item, index) => {
-            item.addEventListener('mouseenter', () => {
-              // Clear keyboard highlight and update index to match hovered item
-              updateHighlight(index, false);
-            });
+        let previewId = null;
+        if (isKeyboardNav && highlightIndex >= 0 && highlightIndex < items.length) {
+          const item = items[highlightIndex];
+          item.classList.add('fxnova-keyboard-highlight');
+          item.scrollIntoView({ block: 'nearest' });
+          if (item.classList.contains('fxnova-card')) {
+            previewId = item.getAttribute('data-preview');
+          }
+        }
+        
+        if (overlayShell && isKeyboardNav) {
+          if (previewId) {
+            overlayShell.setAttribute('data-keyboard-preview', previewId);
+          } else {
+            overlayShell.removeAttribute('data-keyboard-preview');
+          }
+        }
+      }
+
+      // Add mouse listeners to sync highlight index with hover
+      function wireMouseListeners() {
+        const items = getSelectableItems();
+        items.forEach((item, index) => {
+          item.addEventListener('mouseenter', () => {
+            // Clear keyboard highlight and update index to match hovered item
+            updateHighlight(index, false);
           });
+        });
+      }
+
+      function getSuggestionsForInput(lettersOnly, data) {
+        if (!lettersOnly) return [];
+        if (lettersOnly.length === 1) {
+          const prefixes = Object.keys(data)
+            .filter(key => key.startsWith(lettersOnly))
+            .sort();
+          return prefixes.map(prefix => data[prefix]?.[0]).filter(Boolean);
         }
-        wireMouseListeners();
+        const prefix = lettersOnly.slice(0, 2);
+        const list = Array.isArray(data[prefix]) ? data[prefix] : [];
+        if (lettersOnly.length <= 2) return list.slice();
+        const filtered = list.filter(item => item.startsWith(lettersOnly));
+        return filtered.length ? filtered : list;
+      }
 
-        function getSuggestionsForInput(lettersOnly, data) {
-          if (!lettersOnly) return [];
-          if (lettersOnly.length === 1) {
-            const prefixes = Object.keys(data)
-              .filter(key => key.startsWith(lettersOnly))
-              .sort();
-            return prefixes.map(prefix => data[prefix]?.[0]).filter(Boolean);
-          }
-          const prefix = lettersOnly.slice(0, 2);
-          const list = Array.isArray(data[prefix]) ? data[prefix] : [];
-          if (lettersOnly.length <= 2) return list.slice();
-          const filtered = list.filter(item => item.startsWith(lettersOnly));
-          return filtered.length ? filtered : list;
+      function formatSuggestionLabel(term, lettersOnly) {
+        if (!lettersOnly) return escapeHtml(term);
+        const normalizedItem = term.toLowerCase();
+        const normalizedLetters = lettersOnly.toLowerCase();
+        if (!normalizedItem.startsWith(normalizedLetters)) {
+          return escapeHtml(term);
         }
+        const safeLength = Math.min(lettersOnly.length, term.length);
+        const matched = term.slice(0, safeLength);
+        const remainder = term.slice(safeLength);
+        return `<span class="fxnova-typed-chars">${escapeHtml(matched)}</span>${escapeHtml(remainder)}`;
+      }
 
-        function formatSuggestionLabel(item, lettersOnly) {
-          if (!lettersOnly) return escapeHtml(item);
-          const normalizedItem = item.toLowerCase();
-          const normalizedLetters = lettersOnly.toLowerCase();
-          if (!normalizedItem.startsWith(normalizedLetters)) {
-            return escapeHtml(item);
-          }
-          const safeLength = Math.min(lettersOnly.length, item.length);
-          const matched = item.slice(0, safeLength);
-          const remainder = item.slice(safeLength);
-          return `<span class="fxnova-typed-chars">${escapeHtml(matched)}</span>${escapeHtml(remainder)}`;
-        }
+      function buildSuggestionItems(lettersOnly, history, data) {
+        const historyMatches = getHistoryMatches(lettersOnly, history);
+        const suggestionMatches = getSuggestionsForInput(lettersOnly, data);
+        const results = [];
+        const seen = new Set();
 
-        function renderSuggestions(items, lettersOnly) {
-          if (!suggestionsList) return;
-          if (!items.length) {
-            suggestionsList.innerHTML = `
-              <p class="fxnova-section-title">Suggestions</p>
-              <div class="fxnova-result-row fxnova-google-suggestion">
-                <div class="fxnova-result-icon" style="width:28px;height:28px;">
-                  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                    <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
-                    <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div class="fxnova-result-content">
-                  <p class="fxnova-result-title" style="font-weight:600;">No suggestions found</p>
-                  <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
-                </div>
-              </div>
-            `;
-            wireMouseListeners();
-            return;
-          }
+        historyMatches.forEach((entry) => {
+          const key = entry.normalized || extractLetters(entry.term);
+          if (!key || seen.has(key)) return;
+          seen.add(key);
+          results.push({ term: entry.term, type: 'history' });
+        });
 
-          const rows = items.map(item => `
+        suggestionMatches.forEach((term) => {
+          const key = extractLetters(term);
+          if (!key || seen.has(key)) return;
+          seen.add(key);
+          results.push({ term, type: 'suggestion' });
+        });
+
+        return results.slice(0, MAX_SUGGESTIONS);
+      }
+
+      function renderSuggestions(items, lettersOnly) {
+        if (!suggestionsList) return;
+        if (!items.length) {
+          suggestionsList.innerHTML = `
             <div class="fxnova-result-row fxnova-google-suggestion">
               <div class="fxnova-result-icon" style="width:28px;height:28px;">
-                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="16" height="16">
-                  <path d="M7.1 1a6.1 6.1 0 1 1 0 12.2A6.1 6.1 0 0 1 7.1 1Zm0 1.3a4.8 4.8 0 1 0 0 9.6 4.8 4.8 0 0 0 0-9.6Z" fill="#7B618F"/>
-                  <path d="m10.8 10.8 3 3" stroke="#7B618F" stroke-width="1.2" stroke-linecap="round"/>
-                </svg>
+                ${getSuggestionIcon('suggestion')}
               </div>
               <div class="fxnova-result-content">
-                <p class="fxnova-result-title" style="font-weight:400;">${formatSuggestionLabel(item, lettersOnly)}</p>
+                <p class="fxnova-result-title" style="font-weight:600;">No suggestions found</p>
                 <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
               </div>
             </div>
-          `).join('');
-
-          suggestionsList.innerHTML = `
-            <p class="fxnova-section-title">Suggestions</p>
-            ${rows}
           `;
           wireMouseListeners();
+          return;
         }
 
-        async function updateSuggestions(value) {
-          if (!suggestionsList) return;
-          const lettersOnly = extractLetters(value);
-          if (!lettersOnly) {
-            suggestionsList.innerHTML = defaultSuggestionsHtml;
-            wireMouseListeners();
-            return;
-          }
-          const data = await loadSuggestionData();
-          const suggestions = getSuggestionsForInput(lettersOnly, data);
-          renderSuggestions(suggestions, lettersOnly);
+        const rows = items.map(item => `
+          <div class="fxnova-result-row fxnova-google-suggestion" data-nova-suggestion="${escapeHtml(item.term)}">
+            <div class="fxnova-result-icon" style="width:28px;height:28px;">
+              ${getSuggestionIcon(item.type)}
+            </div>
+            <div class="fxnova-result-content">
+              <p class="fxnova-result-title" style="font-weight:400;">${formatSuggestionLabel(item.term, lettersOnly)}</p>
+              <p class="fxnova-result-meta"><span class="fxnova-meta-dot">·</span>Search with Google</p>
+            </div>
+          </div>
+        `).join('');
+
+        suggestionsList.innerHTML = `
+          ${rows}
+        `;
+        wireMouseListeners();
+        overlay.querySelectorAll('[data-nova-suggestion]').forEach((row) => {
+          row.addEventListener('click', () => {
+            const value = row.dataset.novaSuggestion;
+            if (value) navigateTo(value);
+          });
+        });
+      }
+
+      async function updateSuggestions(value) {
+        if (!suggestionsList) return;
+        const lettersOnly = extractLetters(value);
+        if (!lettersOnly) {
+          suggestionsList.innerHTML = defaultSuggestionsHtml;
+          wireMouseListeners();
+          return;
         }
+        const [data, history] = await Promise.all([
+          loadSuggestionData(),
+          loadSearchHistory()
+        ]);
+        const suggestions = buildSuggestionItems(lettersOnly, history, data);
+        renderSuggestions(suggestions, lettersOnly);
+      }
+
+      if (!input.dataset.wired) {
+        input.dataset.wired = 'true';
         
         // Reset highlight when user types (not arrow keys)
         input.addEventListener('input', () => {
@@ -575,6 +749,19 @@
         observer.observe(overlay, { attributes: true, attributeFilter: ['style'] });
       }
       
+      // Pre-fill with current URL on every open
+      const initialValue = window.location.href.replace(/^https?:\/\//i, '');
+      input.value = initialValue;
+      
+      // Reset highlight state and keyboard-nav styling on open
+      highlightIndex = -1;
+      const items = getSelectableItems();
+      items.forEach(item => item.classList.remove('fxnova-keyboard-highlight'));
+      if (overlayShell) {
+        overlayShell.classList.remove('fxnova-keyboard-nav');
+        overlayShell.removeAttribute('data-keyboard-preview');
+      }
+
       // Focus, select all, but keep scroll at start
       setTimeout(() => {
         input.focus();
@@ -583,7 +770,7 @@
           input.scrollLeft = 0;
         });
       }, 0);
-      updateSuggestions(input.value);
+      updateSuggestions('');
     }
 
     // Show/hide overlay driven by messages from iframe
