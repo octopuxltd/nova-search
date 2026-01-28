@@ -388,7 +388,7 @@
     }
 
     function showExtensionMenu(buttonRect, iframeRect) {
-      const timestamp = new Date().toLocaleString();
+      const timestamp = '__BUILD_TIME__';
       // Remove existing menu if any
       let menu = document.getElementById('nova-extension-menu');
       if (menu) {
