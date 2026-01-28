@@ -3,9 +3,9 @@
     "nova-prototype@octopuxltd.com": {
       "updates": [
         {
-          "version": "1.0.0",
-          "update_link": "https://github.com/octopuxltd/nova-search/releases/download/v1.0.0/9e4177e5d7b44c9284d8-1.0.0.xpi",
-          "update_hash": "sha256:3b111cda95503a8e6e5e3fa0b84d607c124ea322bada0fab993b33ed27f347e2"
+          "version": "1.0.1",
+          "update_link": "https://github.com/octopuxltd/nova-search/releases/download/v1.0.1/nova_ux_prototype-1.0.1.xpi",
+          "update_hash": "sha256:2ef02c44f813e835975aeb54af70d0c1ca507b918173d299076614a18cf3cbb9"
         }
       ]
     }

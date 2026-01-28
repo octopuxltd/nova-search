@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Nova Search & Suggest Prototype",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Firefox extension simulating browser chrome UI",
   "browser_specific_settings": {
     "gecko": {
